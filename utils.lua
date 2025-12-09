@@ -24,3 +24,20 @@ end
 function log(str)
     reaper.ShowConsoleMsg(str.."\n")
 end
+
+local logY = 0
+
+function startGlog()
+    logY = 0
+end
+
+function glog(str)
+    gfx.x = 0 
+    gfx.y = logY
+    gfx.set(1,1,1)
+
+    gfx.printf(str.."\n")
+
+    logY = gfx.y + gfx.texth
+end
+

@@ -176,29 +176,21 @@ end
 -- This function has to be without arguments because it gets called by reaper itself
 -- so the tracks has to be global vars
 local function update()
-    gfx.x = 0
-    gfx.y = 0
+    startGlog()
 
     if notesTrack == nil then
         gfx.printf("ERROR: Notes track not found")
     else 
         local startPPQ, endPPQ = getPPQTimes(notesTrack)
 
-        gfx.printf("    Time: %f\t%f", startPPQ, endPPQ)
-
-        gfx.x = 0
-        gfx.y = gfx.y + gfx.texth
+        glog(string.format("    Time: %f\t%f", startPPQ, endPPQ))
 
         local notesInFrame = getNotesInFrame(notesTrack, startPPQ, endPPQ)
         if notesInFrame == nil then
-            gfx.printf("ERROR: Could not find compatible midi take")
-            gfx.x = 0
-            gfx.y = gfx.y + gfx.texth
+            glog("ERROR: Could not find compatible midi take")
         else
             for idx, spike in pairs(notesInFrame.spikes) do
-                gfx.printf("%d, %d", spike.basePosition, spike.tipPosition)
-                gfx.x = 0
-                gfx.y = gfx.y + gfx.texth
+                glog(string.format("%d, %d", spike.basePosition, spike.tipPosition))
             end
             --draw stuff
             --NEW
@@ -209,18 +201,6 @@ local function update()
         end
 
     end
-
-
-
-
-
-
-    -- debug log
-    --gfx.x = 0
-    --gfx.y = gfx.h - gfx.texth
-    --gfx.set(1,1,1)
-    --gfx.drawstr(debugLog)
-
     gfx.update()
 
     -- gfx.getchar() returns -1 if the window is closed
