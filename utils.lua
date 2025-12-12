@@ -41,3 +41,19 @@ function glog(str)
     logY = gfx.y + gfx.texth
 end
 
+--returns startPPQ, endPPQ
+function getPPQTimes(track, rangeS)
+    local playbackTimeS = reaper.GetCursorPositionEx(0)
+    if reaper.GetPlayStateEx(0) == 1 then
+        playbackTimeS = reaper.GetPlayPositionEx(0)
+    end
+    local endTimeS = playbackTimeS + rangeS
+    local midiTake = reaper.GetMediaItemTake(reaper.GetTrackMediaItem(track, 0), 0)
+    if not reaper.TakeIsMIDI(midiTake) then
+        return 0, 1 --just to avoid divisions by 0, this edge case should never happen anyway if used in the djh template
+    else 
+        local playbackTimePPQ = reaper.MIDI_GetPPQPosFromProjTime(midiTake, playbackTimeS)
+        local endTimePPQ = reaper.MIDI_GetPPQPosFromProjTime(midiTake, endTimeS)
+        return playbackTimePPQ, endTimePPQ
+    end
+end
