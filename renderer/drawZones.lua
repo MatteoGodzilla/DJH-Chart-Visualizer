@@ -45,7 +45,8 @@ function drawZones(startPPQ, crossfades, spikes)
             --it is currently on a spike
 
             local animPercent = (startPPQ - firstSpike.startPPQ)/(firstSpike.endPPQ - firstSpike.startPPQ)
-            local triangle = math.max(0, 2 * (0.5 - math.abs(animPercent * 2 - 1)))
+            --local triangle = math.max(0, 2 * (0.5 - math.abs(animPercent * 2 - 1)))
+            local triangle = math.max(0, (1 - animPercent)^2 )
 
             if firstSpike.basePosition == CrossfadePos.GREEN then
                 greenOffset = -2*UNIT_SIZE + UNIT_SIZE * triangle

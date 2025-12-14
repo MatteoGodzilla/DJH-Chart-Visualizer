@@ -10,6 +10,13 @@ EventType = {
     SPIKE = 2
 }
 
+EffectMask = {
+    GREEN = 1,
+    RED = 2,
+    BLUE = 4,
+    ALL = 7
+}
+
 --Pos is one of the available values in CrossfadePos
 function CrossfadeEvent(startTime, endTime, pos)
     return {

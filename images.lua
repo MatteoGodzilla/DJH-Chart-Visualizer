@@ -13,48 +13,50 @@ local tapsImage       = gfx.loadimg(0, baseDir.."taps.png")
 local zonesImage      = gfx.loadimg(1, baseDir.."zones.png") 
 local crossImage      = gfx.loadimg(2, baseDir.."cross.png")
 local laneImage       = gfx.loadimg(3, baseDir.."lanes.png")
-local transitionImage = gfx.loadimg(3, baseDir.."laneTransitions.png")
-local greenSpikes     = gfx.loadimg(4, baseDir.."greenSpikes.png")
-local blueSpikes      = gfx.loadimg(5, baseDir.."blueSpikes.png")
+local transitionImage = gfx.loadimg(4, baseDir.."laneTransitions.png")
+local greenSpikes     = gfx.loadimg(5, baseDir.."greenSpikes.png")
+local blueSpikes      = gfx.loadimg(6, baseDir.."blueSpikes.png")
+local greenCrossfade  = gfx.loadimg(7, baseDir.."greenCrossfades.png")
+local blueCrossfade   = gfx.loadimg(8, baseDir.."blueCrossfades.png")
+
+local u = 512
 
 --TODO: hold tap trail
---TODO: crossfade lanes
---TODO: crossfade spikes
 --TODO: freestyle
 return {
-    TAP_G_L0 = ImageData(tapsImage,0   ,0,512,512), 
-    TAP_G_L1 = ImageData(tapsImage,512 ,0,512,512), 
-    TAP_G_L2 = ImageData(tapsImage,1024,0,512,512), 
-    TAP_G_L3 = ImageData(tapsImage,1536,0,512,512), 
+    TAP_G_L0 = ImageData(tapsImage,0*u,0*u,1*u,1*u), 
+    TAP_G_L1 = ImageData(tapsImage,1*u,0*u,1*u,1*u), 
+    TAP_G_L2 = ImageData(tapsImage,2*u,0*u,1*u,1*u), 
+    TAP_G_L3 = ImageData(tapsImage,3*u,0*u,1*u,1*u), 
 
-    TAP_R_L0 = ImageData(tapsImage,0   ,512,512,512), 
-    TAP_R_L1 = ImageData(tapsImage,512 ,512,512,512), 
-    TAP_R_L2 = ImageData(tapsImage,1024,512,512,512), 
-    TAP_R_L3 = ImageData(tapsImage,1536,512,512,512), 
+    TAP_R_L0 = ImageData(tapsImage,0*u,1*u,1*u,1*u), 
+    TAP_R_L1 = ImageData(tapsImage,1*u,1*u,1*u,1*u), 
+    TAP_R_L2 = ImageData(tapsImage,2*u,1*u,1*u,1*u), 
+    TAP_R_L3 = ImageData(tapsImage,3*u,1*u,1*u,1*u), 
 
-    TAP_B_L0 = ImageData(tapsImage,0   ,1024,512,512), 
-    TAP_B_L1 = ImageData(tapsImage,512 ,1024,512,512), 
-    TAP_B_L2 = ImageData(tapsImage,1024,1024,512,512), 
-    TAP_B_L3 = ImageData(tapsImage,1536,1024,512,512), 
+    TAP_B_L0 = ImageData(tapsImage,0*u,2*u,1*u,1*u), 
+    TAP_B_L1 = ImageData(tapsImage,1*u,2*u,1*u,1*u), 
+    TAP_B_L2 = ImageData(tapsImage,2*u,2*u,1*u,1*u), 
+    TAP_B_L3 = ImageData(tapsImage,3*u,2*u,1*u,1*u), 
 
-    ZONE_G    = ImageData(zonesImage,0   ,0  ,512 ,512),
-    ZONE_R    = ImageData(zonesImage,512 ,0  ,512 ,512),
-    ZONE_B    = ImageData(zonesImage,1024,0  ,512 ,512),
-    ZONE_SLOT = ImageData(zonesImage,0   ,512,1024,512),
+    ZONE_G    = ImageData(zonesImage,0*u,0*u,1*u,1*u),
+    ZONE_R    = ImageData(zonesImage,1*u,0*u,1*u,1*u),
+    ZONE_B    = ImageData(zonesImage,2*u,0*u,1*u,1*u),
+    ZONE_SLOT = ImageData(zonesImage,0*u,1*u,2*u,1*u),
 
     --lane textures
     --for when no events are changing the sides
-    LANE_G_ACTIVE   = ImageData(laneImage,0   ,0,512,512), --vertical stretch
-    LANE_G_EFFECTS  = ImageData(laneImage,512 ,0,512,512), --vertical stretch
-    LANE_G_INACTIVE = ImageData(laneImage,1024,0,512,512), --vertical stretch
+    LANE_G_ACTIVE   = ImageData(laneImage,0*u,0*u,1*u,1*u), --vertical stretch
+    LANE_G_EFFECTS  = ImageData(laneImage,1*u,0*u,1*u,1*u), --vertical stretch
+    LANE_G_INACTIVE = ImageData(laneImage,2*u,0*u,1*u,1*u), --vertical stretch
     
-    LANE_R_ACTIVE   = ImageData(laneImage,0   ,512,512,512), --vertical stretch
-    LANE_R_EFFECTS  = ImageData(laneImage,512 ,512,512,512), --vertical stretch
-    LANE_R_INACTIVE = ImageData(laneImage,1024,512,512,512), --vertical stretch
+    LANE_R_ACTIVE   = ImageData(laneImage,0*u,1*u,1*u,1*u), --vertical stretch
+    LANE_R_EFFECTS  = ImageData(laneImage,1*u,1*u,1*u,1*u), --vertical stretch
+    LANE_R_INACTIVE = ImageData(laneImage,2*u,1*u,1*u,1*u), --vertical stretch
 
-    LANE_B_ACTIVE   = ImageData(laneImage,0   ,1024,512,512), --vertical stretch
-    LANE_B_EFFECTS  = ImageData(laneImage,512 ,1024,512,512), --vertical stretch
-    LANE_B_INACTIVE = ImageData(laneImage,1024,1024,512,512), --vertical stretch
+    LANE_B_ACTIVE   = ImageData(laneImage,0*u,2*u,1*u,1*u), --vertical stretch
+    LANE_B_EFFECTS  = ImageData(laneImage,1*u,2*u,1*u,1*u), --vertical stretch
+    LANE_B_INACTIVE = ImageData(laneImage,2*u,2*u,1*u,1*u), --vertical stretch
 
     --transitions from a lane state to another
     LANE_G_ACTIVE_EFFECTS = ImageData(), 
@@ -82,59 +84,59 @@ return {
     --Imagine you are in the zones and the note is facing you
 
     --crossfade for left side
-    CROSS_G_BACK_LEFT_ACTIVE = ImageData(),
-    CROSS_G_BACK_LEFT_EFFECTS = ImageData(),
-    --CROSS_G_BACK_LEFT_INACTIVE = ImageData(), -- does not make sense
-    CROSS_G_BACK_RIGHT_ACTIVE = ImageData(),
-    CROSS_G_BACK_RIGHT_EFFECTS = ImageData(),
-    CROSS_G_BACK_RIGHT_INACTIVE = ImageData(),
-    CROSS_G_FRONT_LEFT_ACTIVE = ImageData(),
-    CROSS_G_FRONT_LEFT_EFFECTS = ImageData(),
-    --CROSS_G_FRONT_LEFT_INACTIVE = ImageData(), -- does not make sense
-    CROSS_G_FRONT_RIGHT_ACTIVE = ImageData(),
-    CROSS_G_FRONT_RIGHT_EFFECTS = ImageData(),
-    CROSS_G_FRONT_RIGHT_INACTIVE = ImageData(),
+    CROSS_G_LEFT_BACK_ACTIVE     = ImageData(greenCrossfade,0*u,0*u,u,u),
+    CROSS_G_LEFT_BACK_EFFECTS    = ImageData(greenCrossfade,2*u,0*u,u,u),
+    --CROSS_G_LEFT_BACK_INACTIVE   = ImageData(greenCrossfade,4*u,0*u,u,u), --does not make sense
+    CROSS_G_RIGHT_BACK_ACTIVE    = ImageData(greenCrossfade,1*u,1*u,u,u),
+    CROSS_G_RIGHT_BACK_EFFECTS   = ImageData(greenCrossfade,3*u,1*u,u,u),
+    CROSS_G_RIGHT_BACK_INACTIVE  = ImageData(greenCrossfade,5*u,1*u,u,u),
+    CROSS_G_LEFT_FRONT_ACTIVE    = ImageData(greenCrossfade,0*u,1*u,u,u),
+    CROSS_G_LEFT_FRONT_EFFECTS   = ImageData(greenCrossfade,2*u,1*u,u,u),
+    --CROSS_G_LEFT_FRONT_INACTIVE  = ImageData(greenCrossfade,4*u,1*u,u,u), --does not make sense
+    CROSS_G_RIGHT_FRONT_ACTIVE   = ImageData(greenCrossfade,1*u,0*u,u,u),
+    CROSS_G_RIGHT_FRONT_EFFECTS  = ImageData(greenCrossfade,3*u,0*u,u,u),
+    CROSS_G_RIGHT_FRONT_INACTIVE = ImageData(greenCrossfade,5*u,0*u,u,u),
 
     --crossfade for right side
-    CROSS_B_BACK_LEFT_ACTIVE = ImageData(),
-    CROSS_B_BACK_LEFT_EFFECTS = ImageData(),
-    CROSS_B_BACK_LEFT_INACTIVE = ImageData(),
-    CROSS_B_BACK_RIGHT_ACTIVE = ImageData(),
-    CROSS_B_BACK_RIGHT_EFFECTS = ImageData(),
-    --CROSS_B_BACK_RIGHT_INACTIVE = ImageData(), --does not make sense
-    CROSS_B_FRONT_LEFT_ACTIVE = ImageData(),
-    CROSS_B_FRONT_LEFT_EFFECTS = ImageData(),
-    CROSS_B_FRONT_LEFT_INACTIVE = ImageData(),
-    CROSS_B_FRONT_RIGHT_ACTIVE = ImageData(),
-    CROSS_B_FRONT_RIGHT_EFFECTS = ImageData(),
-    --CROSS_B_FRONT_RIGHT_INACTIVE = ImageData(), --does not make sense
+    CROSS_B_LEFT_BACK_ACTIVE     = ImageData(blueCrossfade,0*u,0*u,u,u),
+    CROSS_B_LEFT_BACK_EFFECTS    = ImageData(blueCrossfade,2*u,0*u,u,u),
+    CROSS_B_LEFT_BACK_INACTIVE   = ImageData(blueCrossfade,4*u,0*u,u,u),
+    CROSS_B_RIGHT_BACK_ACTIVE    = ImageData(blueCrossfade,1*u,1*u,u,u),
+    CROSS_B_RIGHT_BACK_EFFECTS   = ImageData(blueCrossfade,3*u,1*u,u,u),
+    --CROSS_B_RIGHT_BACK_INACTIVE  = ImageData(blueCrossfade,5*u,1*u,u,u), --does not make sense
+    CROSS_B_LEFT_FRONT_ACTIVE    = ImageData(blueCrossfade,0*u,1*u,u,u),
+    CROSS_B_LEFT_FRONT_EFFECTS   = ImageData(blueCrossfade,2*u,1*u,u,u),
+    CROSS_B_LEFT_FRONT_INACTIVE  = ImageData(blueCrossfade,4*u,1*u,u,u),
+    CROSS_B_RIGHT_FRONT_ACTIVE   = ImageData(blueCrossfade,1*u,0*u,u,u),
+    CROSS_B_RIGHT_FRONT_EFFECTS  = ImageData(blueCrossfade,3*u,0*u,u,u),
+    --CROSS_B_RIGHT_FRONT_INACTIVE = ImageData(blueCrossfade,5*u,0*u,u,u), --does not make sense
    
     --spikes for the left side
-    SPIKE_G_BACK_LEFT_ACTIVE     = ImageData(greenSpikes,0   ,0  ,1024,256),
-    SPIKE_G_BACK_LEFT_EFFECTS    = ImageData(greenSpikes,1024,0  ,1024,256),
-    SPIKE_G_BACK_LEFT_INACTIVE   = ImageData(greenSpikes,2048,0  ,1024,256),
-    SPIKE_G_BACK_RIGHT_ACTIVE    = ImageData(greenSpikes,3072,0  ,1024,256),
-    SPIKE_G_BACK_RIGHT_EFFECTS   = ImageData(greenSpikes,4098,0  ,1024,256),
-    SPIKE_G_BACK_RIGHT_INACTIVE  = ImageData(greenSpikes,5120,0  ,1024,256),
-    SPIKE_G_FRONT_LEFT_ACTIVE    = ImageData(greenSpikes,0   ,256,1024,256),
-    SPIKE_G_FRONT_LEFT_EFFECTS   = ImageData(greenSpikes,1024,256,1024,256),
-    SPIKE_G_FRONT_LEFT_INACTIVE  = ImageData(greenSpikes,2048,256,1024,256),
-    SPIKE_G_FRONT_RIGHT_ACTIVE   = ImageData(greenSpikes,3072,256,1024,256),
-    SPIKE_G_FRONT_RIGHT_EFFECTS  = ImageData(greenSpikes,4098,256,1024,256),
-    SPIKE_G_FRONT_RIGHT_INACTIVE = ImageData(greenSpikes,5120,256,1024,256),
+    SPIKE_G_BACK_LEFT_ACTIVE     = ImageData(greenSpikes,0*u ,0*u,2*u,u/2),
+    SPIKE_G_BACK_LEFT_EFFECTS    = ImageData(greenSpikes,2*u ,0*u,2*u,u/2),
+    SPIKE_G_BACK_LEFT_INACTIVE   = ImageData(greenSpikes,4*u ,0*u,2*u,u/2),
+    SPIKE_G_BACK_RIGHT_ACTIVE    = ImageData(greenSpikes,10*u ,0*u,2*u,u/2),
+    SPIKE_G_BACK_RIGHT_EFFECTS   = ImageData(greenSpikes,8*u ,0*u,2*u,u/2),
+    SPIKE_G_BACK_RIGHT_INACTIVE  = ImageData(greenSpikes,6*u,0*u,2*u,u/2),
+    SPIKE_G_FRONT_LEFT_ACTIVE    = ImageData(greenSpikes,0*u ,u/2,2*u,u/2),
+    SPIKE_G_FRONT_LEFT_EFFECTS   = ImageData(greenSpikes,2*u ,u/2,2*u,u/2),
+    SPIKE_G_FRONT_LEFT_INACTIVE  = ImageData(greenSpikes,4*u ,u/2,2*u,u/2),
+    SPIKE_G_FRONT_RIGHT_ACTIVE   = ImageData(greenSpikes,10*u ,u/2,2*u,u/2),
+    SPIKE_G_FRONT_RIGHT_EFFECTS  = ImageData(greenSpikes,8*u ,u/2,2*u,u/2),
+    SPIKE_G_FRONT_RIGHT_INACTIVE = ImageData(greenSpikes,6*u,u/2,2*u,u/2),
 
     --spikes for the right side
-    SPIKE_B_BACK_LEFT_ACTIVE     = ImageData(blueSpikes,0   ,0  ,1024,256),
-    SPIKE_B_BACK_LEFT_EFFECTS    = ImageData(blueSpikes,1024,0  ,1024,256),
-    SPIKE_B_BACK_LEFT_INACTIVE   = ImageData(blueSpikes,2048,0  ,1024,256),
-    SPIKE_B_BACK_RIGHT_ACTIVE    = ImageData(blueSpikes,3072,0  ,1024,256),
-    SPIKE_B_BACK_RIGHT_EFFECTS   = ImageData(blueSpikes,4098,0  ,1024,256),
-    SPIKE_B_BACK_RIGHT_INACTIVE  = ImageData(blueSpikes,5120,0  ,1024,256),
-    SPIKE_B_FRONT_LEFT_ACTIVE    = ImageData(blueSpikes,0   ,256,1024,256),
-    SPIKE_B_FRONT_LEFT_EFFECTS   = ImageData(blueSpikes,1024,256,1024,256),
-    SPIKE_B_FRONT_LEFT_INACTIVE  = ImageData(blueSpikes,2048,256,1024,256),
-    SPIKE_B_FRONT_RIGHT_ACTIVE   = ImageData(blueSpikes,3072,256,1024,256),
-    SPIKE_B_FRONT_RIGHT_EFFECTS  = ImageData(blueSpikes,4098,256,1024,256),
-    SPIKE_B_FRONT_RIGHT_INACTIVE = ImageData(blueSpikes,5120,256,1024,256),
+    SPIKE_B_BACK_LEFT_ACTIVE     = ImageData(blueSpikes,0*u ,0*u,2*u,u/2),
+    SPIKE_B_BACK_LEFT_EFFECTS    = ImageData(blueSpikes,2*u ,0*u,2*u,u/2),
+    SPIKE_B_BACK_LEFT_INACTIVE   = ImageData(blueSpikes,4*u ,0*u,2*u,u/2),
+    SPIKE_B_BACK_RIGHT_ACTIVE    = ImageData(blueSpikes,10*u ,0*u,2*u,u/2),
+    SPIKE_B_BACK_RIGHT_EFFECTS   = ImageData(blueSpikes,8*u ,0*u,2*u,u/2),
+    SPIKE_B_BACK_RIGHT_INACTIVE  = ImageData(blueSpikes,6*u,0*u,2*u,u/2),
+    SPIKE_B_FRONT_LEFT_ACTIVE    = ImageData(blueSpikes,0*u ,u/2,2*u,u/2),
+    SPIKE_B_FRONT_LEFT_EFFECTS   = ImageData(blueSpikes,2*u ,u/2,2*u,u/2),
+    SPIKE_B_FRONT_LEFT_INACTIVE  = ImageData(blueSpikes,4*u ,u/2,2*u,u/2),
+    SPIKE_B_FRONT_RIGHT_ACTIVE   = ImageData(blueSpikes,10*u ,u/2,2*u,u/2),
+    SPIKE_B_FRONT_RIGHT_EFFECTS  = ImageData(blueSpikes,8*u ,u/2,2*u,u/2),
+    SPIKE_B_FRONT_RIGHT_INACTIVE = ImageData(blueSpikes,6*u,u/2,2*u,u/2),
 }
 
