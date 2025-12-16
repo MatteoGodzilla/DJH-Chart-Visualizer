@@ -4,6 +4,8 @@ local NOTES2MIDI = require("notesToMidi")
 require("notesData")
 require("renderer/drawZones")
 require("renderer/drawCrossfades")
+require("renderer/drawTaps")
+require("renderer/drawScratches")
 
 --Other globals
 local notesTrack = nil
@@ -19,7 +21,10 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
     else
         local result = {
             crossfades = {},
-            spikes = {}
+            spikes = {},
+            taps = {},
+            scratches = {},
+            scratchZones = {},
         }
         local midiTake = reaper.GetMediaItemTake(reaper.GetTrackMediaItem(notesTrack, 0), 0)
         if reaper.TakeIsMIDI(midiTake) then
@@ -60,7 +65,7 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                     lastCrossfade = CrossfadePos.RED
                     --need to adjust the first spike, since it could have green or blue set as base
                     if lastAddedSpike ~= nil then
-                        lastAddedSpike.basePosition = CrossfadePos.RED
+                        lastAddedSpike.position = CrossfadePos.RED
                     end
                 end
 
@@ -83,6 +88,48 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                     end
                     consecutiveSpikesCount = consecutiveSpikesCount + 1
                 end
+
+                --check for taps
+                if notePitch == NOTES2MIDI.TAP_G then
+                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
+                        table.insert(result.taps, TapEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.GREEN))
+                    end
+                elseif notePitch == NOTES2MIDI.TAP_R then
+                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
+                        table.insert(result.taps, TapEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.RED))
+                    end
+                elseif notePitch == NOTES2MIDI.TAP_B then
+                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
+                        table.insert(result.taps, TapEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.BLUE))
+                    end
+                end
+
+                --check for scratches
+                if notePitch == NOTES2MIDI.SCRATCH_G_UP then
+                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
+                        table.insert(result.scratches, ScratchEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.GREEN, ScratchDir.UP))
+                    end
+                elseif notePitch == NOTES2MIDI.SCRATCH_G_DOWN then
+                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
+                        table.insert(result.scratches, ScratchEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.GREEN, ScratchDir.DOWN))
+                    end
+                elseif notePitch == NOTES2MIDI.SCRATCH_G_ANY then
+                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
+                        table.insert(result.scratches, ScratchEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.GREEN, ScratchDir.ANYDIR))
+                    end
+                elseif notePitch == NOTES2MIDI.SCRATCH_B_UP then
+                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
+                        table.insert(result.scratches, ScratchEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.BLUE, ScratchDir.UP))
+                    end
+                elseif notePitch == NOTES2MIDI.SCRATCH_B_DOWN then
+                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
+                        table.insert(result.scratches, ScratchEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.BLUE, ScratchDir.DOWN))
+                    end
+                elseif notePitch == NOTES2MIDI.SCRATCH_B_ANY then
+                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
+                        table.insert(result.scratches, ScratchEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.BLUE, ScratchDir.ANY))
+                    end
+                end
             end
         end
         return result
@@ -97,9 +144,9 @@ local function update()
     if notesTrack == nil then
         gfx.printf("ERROR: Notes track not found")
     else 
-        local startPPQ, endPPQ = getPPQTimes(notesTrack,visibleRangeS)
+        local startPPQ, endPPQ, PPQresolution = getPPQTimes(notesTrack,visibleRangeS)
 
-        glog(string.format("    Time: %f\t%f", startPPQ, endPPQ))
+        glog(string.format("    Time: %f\t%f\t%f", startPPQ, endPPQ, PPQresolution))
 
         local notesInFrame = getNotesInFrame(notesTrack, startPPQ, endPPQ)
         if notesInFrame == nil then
@@ -111,12 +158,17 @@ local function update()
             end
             glog("----")
             for idx, spike in ipairs(notesInFrame.spikes) do
-                glog(string.format("%d, %d", spike.basePosition, spike.tipPosition))
+                glog(string.format("%d, %d", spike.position, spike.tipPosition))
+            end
+            for idx, tap in ipairs(notesInFrame.taps) do
+                glog(string.format("%d, %d", tap.startPPQ, tap.position))
             end
             ]]--
             --draw stuff
             drawZones(startPPQ, notesInFrame.crossfades, notesInFrame.spikes)
             drawCrossfades(startPPQ, endPPQ, notesInFrame.crossfades, notesInFrame.spikes)
+            drawTaps(startPPQ, endPPQ, PPQresolution, notesInFrame.taps, notesInFrame.crossfades, notesInFrame.spikes)
+            drawScratches(startPPQ, endPPQ, PPQresolution, notesInFrame.scratches, notesInFrame.crossfades, notesInFrame.spikes)
         end
 
     end

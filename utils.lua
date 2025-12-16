@@ -14,15 +14,11 @@ function getDJHTracks()
     return notes, efffects
 end
 
---image is an instance of ImageData
+--ImageData, number, number, number, number
 function drawImg(image, x, y, w, h)
     gfx.a = 1
     gfx.mode = 0
     gfx.blit(image.src, 1, 0, image.srcx, image.srcy, image.srcw, image.srch, x, y, w, h)
-end
-
-function log(str)
-    reaper.ShowConsoleMsg(str.."\n")
 end
 
 local logY = 0
@@ -41,7 +37,7 @@ function glog(str)
     logY = gfx.y + gfx.texth
 end
 
---returns startPPQ, endPPQ
+--returns startPPQ, endPPQ, PPQResolution
 function getPPQTimes(track, rangeS)
     local playbackTimeS = reaper.GetCursorPositionEx(0)
     if reaper.GetPlayStateEx(0) == 1 then
@@ -50,10 +46,28 @@ function getPPQTimes(track, rangeS)
     local endTimeS = playbackTimeS + rangeS
     local midiTake = reaper.GetMediaItemTake(reaper.GetTrackMediaItem(track, 0), 0)
     if not reaper.TakeIsMIDI(midiTake) then
-        return 0, 1 --just to avoid divisions by 0, this edge case should never happen anyway if used in the djh template
+        return 0, 1, 960 --just to avoid divisions by 0, this edge case should never happen anyway if used in the djh template
     else 
         local playbackTimePPQ = reaper.MIDI_GetPPQPosFromProjTime(midiTake, playbackTimeS)
         local endTimePPQ = reaper.MIDI_GetPPQPosFromProjTime(midiTake, endTimeS)
-        return playbackTimePPQ, endTimePPQ
+        local PPQresolution = reaper.MIDI_GetPPQPosFromProjQN(midiTake, 1)
+        return playbackTimePPQ, endTimePPQ, PPQresolution
     end
+end
+
+--number, [CrossfadeEvent], [CFSpikeEvent]
+function getCrossfadePosAt(ppq, crossfades, spikes)
+    for _,cross in ipairs(crossfades) do
+        if cross.startPPQ <= ppq and ppq < cross.endPPQ then
+            return cross.position
+        end
+    end
+
+    for _,spike in ipairs(spikes) do
+        if spike.startPPQ <= ppq and ppq < spike.endPPQ then
+            return spike.position
+        end
+    end
+    --this should never be hit 
+    return CrossfadePos.RED
 end

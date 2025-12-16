@@ -7,7 +7,9 @@ CrossfadePos = {
 
 EventType = {
     CROSS = 1,
-    SPIKE = 2
+    SPIKE = 2,
+    TAP = 3,
+    SCRATCH = 4,
 }
 
 EffectMask = {
@@ -17,23 +19,51 @@ EffectMask = {
     ALL = 7
 }
 
---Pos is one of the available values in CrossfadePos
-function CrossfadeEvent(startTime, endTime, pos)
+ScratchDir = {
+    UP = 1,
+    DOWN = 2,
+    ANYDIR = 3
+}
+
+--Inheritance Tree
+--Event
+--| EventWithPos
+--| | CrossfadeEvent
+--| | | CFSpikeEvent
+--| | TapEvent
+--| | ScratchEvent
+
+local function Event(eventType, startTime, endTime)
     return {
-        type = EventType.CROSS,
+        type = eventType, 
         startPPQ = startTime,
-        endPPQ = endTime,
-        position = pos
+        endPPQ = endTime
     }
+end
+
+--Pos is one of the available values in CrossfadePos
+local function EventWithPos(eventType, startTime, endTime, pos)
+    local res = Event(eventType, startTime, endTime)
+    res.position = pos
+    return res
+end
+
+function CrossfadeEvent(startTime, endTime, pos)
+    return EventWithPos(EventType.CROSS, startTime, endTime, pos)
 end
 
 function CFSpikeEvent(startTime, endTime, basePos, tipPos)
-    return {
-        type = EventType.SPIKE,
-        startPPQ = startTime,
-        endPPQ = endTime,
-        basePosition = basePos,
-        tipPosition = tipPos
-    }
+    local res = EventWithPos(EventType.SPIKE, startTime, endTime, basePos)
+    res.tipPosition = tipPos
+    return res
 end
 
+function TapEvent(startTime, endTime, pos)
+    return EventWithPos(EventType.TAP, startTime, endTime, pos)
+end
+
+function ScratchEvent(startTime, endTime, pos, dir)
+    local res = EventWithPos(EventType.SCRATCH, startTime, endTime, pos)
+    res.direction = dir
+    return res
+end

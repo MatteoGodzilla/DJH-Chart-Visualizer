@@ -1,10 +1,10 @@
 --Constants 
 WIDTH = 800
 HEIGHT = 600
-UNIT_SIZE = 80 --pixels, same for horizontal and vertical
+UNIT = 80 --pixels, same for horizontal and vertical
 ORIGIN_X = WIDTH / 2
-ORIGIN_Y = HEIGHT - UNIT_SIZE
-DEBUG_ORIGIN_X = ORIGIN_X + 3*UNIT_SIZE
+ORIGIN_Y = HEIGHT - UNIT
+DEBUG_ORIGIN_X = ORIGIN_X + 3*UNIT
 
 --TRANSITION = 10
-TRANSITION = UNIT_SIZE / 4
+TRANSITION = UNIT / 4

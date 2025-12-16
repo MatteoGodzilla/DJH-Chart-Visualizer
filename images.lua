@@ -18,6 +18,7 @@ local greenSpikes     = gfx.loadimg(5, baseDir.."greenSpikes.png")
 local blueSpikes      = gfx.loadimg(6, baseDir.."blueSpikes.png")
 local greenCrossfade  = gfx.loadimg(7, baseDir.."greenCrossfades.png")
 local blueCrossfade   = gfx.loadimg(8, baseDir.."blueCrossfades.png")
+local scratches       = gfx.loadimg(9, baseDir.."scratches.png")
 
 local u = 512
 
@@ -138,5 +139,14 @@ return {
     SPIKE_B_FRONT_RIGHT_ACTIVE   = ImageData(blueSpikes,10*u ,u/2,2*u,u/2),
     SPIKE_B_FRONT_RIGHT_EFFECTS  = ImageData(blueSpikes,8*u ,u/2,2*u,u/2),
     SPIKE_B_FRONT_RIGHT_INACTIVE = ImageData(blueSpikes,6*u,u/2,2*u,u/2),
+
+    --scratches
+    SCRATCH_G_UP     = ImageData(scratches, 1*u, 0*u, u, u),
+    SCRATCH_G_DOWN   = ImageData(scratches, 2*u, 0*u, u, u),
+    SCRATCH_G_ANYDIR = ImageData(scratches, 0*u, 0*u, u, u),
+
+    SCRATCH_B_UP     = ImageData(scratches, 1*u, 0*u, u, u),
+    SCRATCH_B_DOWN   = ImageData(scratches, 2*u, 0*u, u, u),
+    SCRATCH_B_ANYDIR = ImageData(scratches, 0*u, 0*u, u, u),
 }
 

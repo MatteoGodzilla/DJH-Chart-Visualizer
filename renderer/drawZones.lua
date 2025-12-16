@@ -2,15 +2,15 @@ require("renderer/sizes")
 local IMAGES = require("images")
 
 function drawZones(startPPQ, crossfades, spikes)
-    local HALF = UNIT_SIZE / 2
-    drawImg(IMAGES.ZONE_SLOT, ORIGIN_X - UNIT_SIZE * 2 - HALF, ORIGIN_Y - HALF, UNIT_SIZE * 2, UNIT_SIZE)
-    drawImg(IMAGES.ZONE_SLOT, ORIGIN_X + UNIT_SIZE - HALF, ORIGIN_Y - HALF, UNIT_SIZE * 2, UNIT_SIZE)
+    local HALF = UNIT / 2
+    drawImg(IMAGES.ZONE_SLOT, ORIGIN_X - UNIT * 2 - HALF, ORIGIN_Y - HALF, UNIT * 2, UNIT)
+    drawImg(IMAGES.ZONE_SLOT, ORIGIN_X + UNIT - HALF, ORIGIN_Y - HALF, UNIT * 2, UNIT)
 
-    drawImg(IMAGES.ZONE_R, ORIGIN_X - HALF, ORIGIN_Y - HALF, UNIT_SIZE, UNIT_SIZE)
+    drawImg(IMAGES.ZONE_R, ORIGIN_X - HALF, ORIGIN_Y - HALF, UNIT, UNIT)
 
     --default to red position
-    local greenOffset = -UNIT_SIZE
-    local blueOffset = UNIT_SIZE
+    local greenOffset = -UNIT
+    local blueOffset = UNIT
 
     if #crossfades > 0 or #spikes > 0 then 
         --at least one of them is not nil
@@ -37,9 +37,9 @@ function drawZones(startPPQ, crossfades, spikes)
             --it is currently on a crossfade
             --assume that 
             if firstCrossfade.position == CrossfadePos.GREEN then
-                greenOffset = -UNIT_SIZE * 2       
+                greenOffset = -UNIT * 2       
             elseif firstCrossfade.position == CrossfadePos.BLUE then
-                blueOffset = UNIT_SIZE *2   
+                blueOffset = UNIT *2   
             end
         elseif useSpike then
             --it is currently on a spike
@@ -48,27 +48,27 @@ function drawZones(startPPQ, crossfades, spikes)
             --local triangle = math.max(0, 2 * (0.5 - math.abs(animPercent * 2 - 1)))
             local triangle = math.max(0, (1 - animPercent)^2 )
 
-            if firstSpike.basePosition == CrossfadePos.GREEN then
-                greenOffset = -2*UNIT_SIZE + UNIT_SIZE * triangle
+            if firstSpike.position == CrossfadePos.GREEN then
+                greenOffset = -2*UNIT + UNIT * triangle
                 if firstSpike.tipPosition == CrossfadePos.BLUE then
-                    blueOffset = UNIT_SIZE + UNIT_SIZE * triangle
+                    blueOffset = UNIT + UNIT * triangle
                 end
-            elseif firstSpike.basePosition == CrossfadePos.RED then
+            elseif firstSpike.position == CrossfadePos.RED then
                 --either red-green-red or red-blue-red
                 if firstSpike.tipPosition == CrossfadePos.GREEN then
-                    greenOffset = -UNIT_SIZE - UNIT_SIZE * triangle 
+                    greenOffset = -UNIT - UNIT * triangle 
                 elseif firstSpike.tipPosition == CrossfadePos.BLUE then
-                    blueOffset = UNIT_SIZE + UNIT_SIZE * triangle
+                    blueOffset = UNIT + UNIT * triangle
                 end
-            elseif firstSpike.basePosition == CrossfadePos.BLUE then
-                blueOffset = 2*UNIT_SIZE - UNIT_SIZE * triangle
+            elseif firstSpike.position == CrossfadePos.BLUE then
+                blueOffset = 2*UNIT - UNIT * triangle
                 if firstSpike.tipPosition == CrossfadePos.GREEN then
-                    greenOffset = -UNIT_SIZE - UNIT_SIZE * triangle
+                    greenOffset = -UNIT - UNIT * triangle
                 end
             end
         end
     end
     
-    drawImg(IMAGES.ZONE_G, ORIGIN_X + greenOffset - HALF, ORIGIN_Y - HALF, UNIT_SIZE, UNIT_SIZE)
-    drawImg(IMAGES.ZONE_B, ORIGIN_X + blueOffset - HALF, ORIGIN_Y - HALF, UNIT_SIZE, UNIT_SIZE)
+    drawImg(IMAGES.ZONE_G, ORIGIN_X + greenOffset - HALF, ORIGIN_Y - HALF, UNIT, UNIT)
+    drawImg(IMAGES.ZONE_B, ORIGIN_X + blueOffset - HALF, ORIGIN_Y - HALF, UNIT, UNIT)
 end
