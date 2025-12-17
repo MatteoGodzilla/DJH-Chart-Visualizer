@@ -13,12 +13,14 @@ local tapsImage       = gfx.loadimg(0, baseDir.."taps.png")
 local zonesImage      = gfx.loadimg(1, baseDir.."zones.png") 
 local crossImage      = gfx.loadimg(2, baseDir.."cross.png")
 local laneImage       = gfx.loadimg(3, baseDir.."lanes.png")
-local transitionImage = gfx.loadimg(4, baseDir.."laneTransitions.png")
-local greenSpikes     = gfx.loadimg(5, baseDir.."greenSpikes.png")
-local blueSpikes      = gfx.loadimg(6, baseDir.."blueSpikes.png")
-local greenCrossfade  = gfx.loadimg(7, baseDir.."greenCrossfades.png")
-local blueCrossfade   = gfx.loadimg(8, baseDir.."blueCrossfades.png")
-local scratches       = gfx.loadimg(9, baseDir.."scratches.png")
+local greenSpikes     = gfx.loadimg(4, baseDir.."greenSpikes.png")
+local blueSpikes      = gfx.loadimg(5, baseDir.."blueSpikes.png")
+local greenCrossfade  = gfx.loadimg(6, baseDir.."greenCrossfades.png")
+local blueCrossfade   = gfx.loadimg(7, baseDir.."blueCrossfades.png")
+local scratches       = gfx.loadimg(8, baseDir.."scratches.png")
+local greenLane       = gfx.loadimg(9, baseDir.."greenLaneTransitions.png")
+local redLane         = gfx.loadimg(10, baseDir.."redLaneTransitions.png")
+local blueLane        = gfx.loadimg(11, baseDir.."blueLaneTransitions.png")
 
 local u = 512
 
@@ -60,26 +62,26 @@ return {
     LANE_B_INACTIVE = ImageData(laneImage,2*u,2*u,1*u,1*u), --vertical stretch
 
     --transitions from a lane state to another
-    LANE_G_ACTIVE_EFFECTS = ImageData(), 
-    LANE_G_ACTIVE_INACTIVE = ImageData(), 
-    LANE_G_EFFECTS_ACTIVE = ImageData(),
-    LANE_G_EFFECTS_INACTIVE = ImageData(),
-    LANE_G_INACTIVE_ACTIVE = ImageData(),
-    LANE_G_INACTIVE_EFFECTS = ImageData(),
+    LANE_G_ACTIVE_TO_EFFECTS   = ImageData(greenLane, 1*u, 1*u/2, u, u/2), 
+    LANE_G_ACTIVE_TO_INACTIVE  = ImageData(greenLane, 0*u, 0*u/2, u, u/2), 
+    LANE_G_EFFECTS_TO_ACTIVE   = ImageData(greenLane, 1*u, 0*u/2, u, u/2),
+    LANE_G_EFFECTS_TO_INACTIVE = ImageData(greenLane, 2*u, 0*u/2, u, u/2),
+    LANE_G_INACTIVE_TO_ACTIVE  = ImageData(greenLane, 0*u, 1*u/2, u, u/2),
+    LANE_G_INACTIVE_TO_EFFECTS = ImageData(greenLane, 2*u, 1*u/2, u, u/2),
 
-    LANE_R_ACTIVE_EFFECTS = ImageData(),
-    LANE_R_ACTIVE_INACTIVE = ImageData(),
-    LANE_R_EFFECTS_ACTIVE = ImageData(),
-    LANE_R_EFFECTS_INACTIVE = ImageData(),
-    LANE_R_INACTIVE_ACTIVE = ImageData(),
-    LANE_R_INACTIVE_EFFECTS = ImageData(),
+    LANE_R_ACTIVE_TO_EFFECTS   = ImageData(redLane, 1*u, 1*u/2, u, u/2), 
+    LANE_R_ACTIVE_TO_INACTIVE  = ImageData(redLane, 0*u, 0*u/2, u, u/2), 
+    LANE_R_EFFECTS_TO_ACTIVE   = ImageData(redLane, 1*u, 0*u/2, u, u/2),
+    LANE_R_EFFECTS_TO_INACTIVE = ImageData(redLane, 2*u, 0*u/2, u, u/2),
+    LANE_R_INACTIVE_TO_ACTIVE  = ImageData(redLane, 0*u, 1*u/2, u, u/2),
+    LANE_R_INACTIVE_TO_EFFECTS = ImageData(redLane, 2*u, 1*u/2, u, u/2),
 
-    LANE_B_ACTIVE_EFFECTS = ImageData(),
-    LANE_B_ACTIVE_INACTIVE = ImageData(),
-    LANE_B_EFFECTS_ACTIVE = ImageData(),
-    LANE_B_EFFECTS_INACTIVE = ImageData(),
-    LANE_B_INACTIVE_ACTIVE = ImageData(),
-    LANE_B_INACTIVE_EFFECTS = ImageData(),
+    LANE_B_ACTIVE_TO_EFFECTS   = ImageData(blueLane, 1*u, 1*u/2, u, u/2), 
+    LANE_B_ACTIVE_TO_INACTIVE  = ImageData(blueLane, 0*u, 0*u/2, u, u/2), 
+    LANE_B_EFFECTS_TO_ACTIVE   = ImageData(blueLane, 1*u, 0*u/2, u, u/2),
+    LANE_B_EFFECTS_TO_INACTIVE = ImageData(blueLane, 2*u, 0*u/2, u, u/2),
+    LANE_B_INACTIVE_TO_ACTIVE  = ImageData(blueLane, 0*u, 1*u/2, u, u/2),
+    LANE_B_INACTIVE_TO_EFFECTS = ImageData(blueLane, 2*u, 1*u/2, u, u/2),
 
     --Front: part that is earlier in time (visually at the bottom of the window)
     --Imagine you are in the zones and the note is facing you
