@@ -8,6 +8,10 @@ end
 --number, number, ScratchEvent, CrossfadePos
 local function drawSingleScratch(startPPQ, endPPQ, scratch, cfPos)
     local startP = (scratch.startPPQ - startPPQ) / (endPPQ - startPPQ)
+    --TODO: figure out a better solution for held scratches
+    if startP < 0 then
+        return
+    end
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
 
     if scratch.position == CrossfadePos.GREEN then
@@ -45,11 +49,11 @@ local function drawSingleScratch(startPPQ, endPPQ, scratch, cfPos)
     end
 end
 
---number, number, number, [ScratchEvent], [CrossfadeEvent], [CFSpikeEvent]
-function drawScratches(startPPQ, endPPQ, PPQResolution, scratches, crossfades, spikes)
+--number, number, number, [ScratchEvent], [CrossfadeEvent | CFSpikeEvent]
+function drawScratches(startPPQ, endPPQ, PPQResolution, scratches, mergedCross)
     for _, scratch in ipairs(scratches) do
-        glog(string.format("Scratch: %d %d", scratch.position, scratch.direction))
-        local cfPos = getCrossfadePosAt(scratch.startPPQ, crossfades, spikes)
+        --glog(string.format("Scratch: %d %d", scratch.position, scratch.direction))
+        local cfPos = getCrossfadePosAt(scratch.startPPQ, mergedCross)
         if scratch.endPPQ - scratch.startPPQ <= PPQResolution / 4 then
             drawSingleScratch(startPPQ, endPPQ, scratch, cfPos)
         else 

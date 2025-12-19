@@ -204,29 +204,15 @@ local function drawSpike(startPPQ, endPPQ, lastEvent, spike, activeFront, active
     end
 end 
 
-local function PPQComparator(a, b)
-    return a.startPPQ < b.startPPQ
-end
-
-function drawCrossfades(startPPQ, endPPQ, crossfades, spikes)
-    local events = {}
-    for _, crossfade in ipairs(crossfades) do
-        table.insert(events, crossfade)
-    end
-    for _, spike in ipairs(spikes) do
-        table.insert(events, spike)
-    end
-
-    table.sort(events, PPQComparator)
-
+--number, number, [CrossfadeEvent | CFSpikeEvent]
+function drawCrossfades(startPPQ, endPPQ, mergedCross)
     local lastEvent = nil
 
-    for _, event in ipairs(events) do
-        --glog(string.format("%d %d %d", event.type, event.startPPQ, event.endPPQ))
+    for _, event in ipairs(mergedCross) do
         if event.type == EventType.CROSS then
             drawCrossfadeEvent(startPPQ, endPPQ, lastEvent, event)
         elseif event.type == EventType.SPIKE then
-            local front,back = getSpikeActiveState(events, event)
+            local front,back = getSpikeActiveState(mergedCross, event)
             drawSpike(startPPQ, endPPQ, lastEvent, event, front, back)
         end
         lastEvent = event

@@ -6,6 +6,7 @@ require("renderer/drawZones")
 require("renderer/drawCrossfades")
 require("renderer/drawTaps")
 require("renderer/drawScratches")
+require("renderer/drawScratchZones")
 
 --Other globals
 local notesTrack = nil
@@ -130,10 +131,37 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                         table.insert(result.scratches, ScratchEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.BLUE, ScratchDir.ANY))
                     end
                 end
+
+                --check for scratch zones
+                if notePitch == NOTES2MIDI.SCRATCH_G_ZONE then
+                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
+                        table.insert(result.scratchZones, ScratchZoneEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.GREEN))
+                    end
+                elseif notePitch == NOTES2MIDI.SCRATCH_B_ZONE then
+                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
+                        table.insert(result.scratchZones, ScratchZoneEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.BLUE))
+                    end
+                end
             end
         end
         return result
     end
+end
+
+--[CrossfadeEvent], [CFSpikeEvent] -> sorted [CrossfadeEvent | CFSpikeEvent] 
+local function mergeCrossfadeEvents(crossfades, spikes)
+    local result = {}
+    for _, crossfade in ipairs(crossfades) do
+        --glog(string.format("CROSS: %d %d %d", crossfade.startPPQ, crossfade.endPPQ, crossfade.position))
+        table.insert(result, crossfade)
+    end
+    for _, spike in ipairs(spikes) do
+        --glog(string.format("SPIKE: %d %d %d %d", spike.startPPQ, spike.endPPQ, spike.position, spike.tipPosition))
+        table.insert(result, spike)
+    end
+
+    table.sort(result, PPQComparator)
+    return result
 end
 
 -- This function has to be without arguments because it gets called by reaper itself
@@ -152,23 +180,13 @@ local function update()
         if notesInFrame == nil then
             glog("ERROR: Could not find compatible midi take")
         else
-            --[[
-            for idx, crossfade in ipairs(notesInFrame.crossfades) do
-                glog(string.format("%d, %d", crossfade.type, crossfade.position))
-            end
-            glog("----")
-            for idx, spike in ipairs(notesInFrame.spikes) do
-                glog(string.format("%d, %d", spike.position, spike.tipPosition))
-            end
-            for idx, tap in ipairs(notesInFrame.taps) do
-                glog(string.format("%d, %d", tap.startPPQ, tap.position))
-            end
-            ]]--
+            local mergedCross = mergeCrossfadeEvents(notesInFrame.crossfades, notesInFrame.spikes)
             --draw stuff
-            drawZones(startPPQ, notesInFrame.crossfades, notesInFrame.spikes)
-            drawCrossfades(startPPQ, endPPQ, notesInFrame.crossfades, notesInFrame.spikes)
-            drawTaps(startPPQ, endPPQ, PPQresolution, notesInFrame.taps, notesInFrame.crossfades, notesInFrame.spikes)
-            drawScratches(startPPQ, endPPQ, PPQresolution, notesInFrame.scratches, notesInFrame.crossfades, notesInFrame.spikes)
+            drawZones(startPPQ, mergedCross)
+            drawCrossfades(startPPQ, endPPQ, mergedCross)
+            drawTaps(startPPQ, endPPQ, PPQresolution, notesInFrame.taps, mergedCross)
+            drawScratchZones(startPPQ, endPPQ, notesInFrame.scratchZones, mergedCross)
+            drawScratches(startPPQ, endPPQ, PPQresolution, notesInFrame.scratches, mergedCross)
         end
 
     end

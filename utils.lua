@@ -55,19 +55,18 @@ function getPPQTimes(track, rangeS)
     end
 end
 
---number, [CrossfadeEvent], [CFSpikeEvent]
-function getCrossfadePosAt(ppq, crossfades, spikes)
-    for _,cross in ipairs(crossfades) do
+--number, [CrossfadeEvent | CFSpikeEvent]
+function getCrossfadePosAt(ppq, mergedCross)
+    for _,cross in ipairs(mergedCross) do
         if cross.startPPQ <= ppq and ppq < cross.endPPQ then
             return cross.position
         end
     end
 
-    for _,spike in ipairs(spikes) do
-        if spike.startPPQ <= ppq and ppq < spike.endPPQ then
-            return spike.position
-        end
-    end
-    --this should never be hit 
     return CrossfadePos.RED
+end
+
+--Event, Event
+function PPQComparator(a, b)
+    return a.startPPQ < b.startPPQ
 end

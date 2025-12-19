@@ -10,6 +10,7 @@ EventType = {
     SPIKE = 2,
     TAP = 3,
     SCRATCH = 4,
+    SCRATCH_ZONE = 5,
 }
 
 EffectMask = {
@@ -32,6 +33,7 @@ ScratchDir = {
 --| | | CFSpikeEvent
 --| | TapEvent
 --| | ScratchEvent
+--| | ScratchZoneEvent
 
 local function Event(eventType, startTime, endTime)
     return {
@@ -66,4 +68,8 @@ function ScratchEvent(startTime, endTime, pos, dir)
     local res = EventWithPos(EventType.SCRATCH, startTime, endTime, pos)
     res.direction = dir
     return res
+end
+
+function ScratchZoneEvent(startTime, endTime, pos)
+    return EventWithPos(EventType.SCRATCH_ZONE, startTime, endTime, pos)
 end

@@ -6,7 +6,11 @@ end
 
 --number, number, TapEvent, CrossfadePos
 local function drawSingleTap(startPPQ, endPPQ, tap, cfPos)
-    local startP = (tap.startPPQ - startPPQ) / (endPPQ - startPPQ)
+    local startP = math.max(0,(tap.startPPQ - startPPQ) / (endPPQ - startPPQ))
+    --TODO: figure out a better solution for held taps
+    if startP < 0 then
+        return
+    end
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
 
     if tap.position == CrossfadePos.GREEN then
@@ -35,11 +39,10 @@ local function drawSingleTap(startPPQ, endPPQ, tap, cfPos)
     end
 end
 
-
---number, number, number, [TapEvent], [CrossfadeEvent], [CFSpikeEvent]
-function drawTaps(startPPQ, endPPQ, PPQResolution, taps, crossfades, spikes)
+--number, number, number, [TapEvent], [CrossfadeEvent | CFSpikeEvent]
+function drawTaps(startPPQ, endPPQ, PPQResolution, taps, mergedCross)
     for _, tap in ipairs(taps) do
-        local cfPos = getCrossfadePosAt(tap.startPPQ, crossfades, spikes)
+        local cfPos = getCrossfadePosAt(tap.startPPQ, mergedCross)
         if tap.endPPQ - tap.startPPQ <= PPQResolution / 4 then
             drawSingleTap(startPPQ, endPPQ, tap, cfPos)
         else 
