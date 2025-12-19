@@ -11,6 +11,7 @@ EventType = {
     TAP = 3,
     SCRATCH = 4,
     SCRATCH_ZONE = 5,
+    EUPHORIA = 6,
 }
 
 EffectMask = {
@@ -34,6 +35,7 @@ ScratchDir = {
 --| | TapEvent
 --| | ScratchEvent
 --| | ScratchZoneEvent
+--| Euphoria
 
 local function Event(eventType, startTime, endTime)
     return {
@@ -72,4 +74,8 @@ end
 
 function ScratchZoneEvent(startTime, endTime, pos)
     return EventWithPos(EventType.SCRATCH_ZONE, startTime, endTime, pos)
+end
+
+function EuphoriaEvent(startTime, endTime)
+    return Event(EventType.EUPHORIA, startTime, endTime)
 end

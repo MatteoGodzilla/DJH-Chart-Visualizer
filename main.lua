@@ -7,6 +7,7 @@ require("renderer/drawCrossfades")
 require("renderer/drawTaps")
 require("renderer/drawScratches")
 require("renderer/drawScratchZones")
+require("renderer/drawEuphoria")
 
 --Other globals
 local notesTrack = nil
@@ -14,6 +15,8 @@ local effectsTrack = nil
 
 local visibleRangeS = 1.0
 local crossfadeWidth = 20 --pixels
+
+local lastFrame = reaper.time_precise()
 
 --should not do any drawing, just analysis
 local function getNotesInFrame(track, startPPQ, endPPQ)
@@ -26,6 +29,7 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
             taps = {},
             scratches = {},
             scratchZones = {},
+            euphoria = {}
         }
         local midiTake = reaper.GetMediaItemTake(reaper.GetTrackMediaItem(notesTrack, 0), 0)
         if reaper.TakeIsMIDI(midiTake) then
@@ -142,6 +146,13 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                         table.insert(result.scratchZones, ScratchZoneEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.BLUE))
                     end
                 end
+
+                --check for euphoria
+                if notePitch == NOTES2MIDI.EUPHORIA then
+                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
+                        table.insert(result.euphoria, EuphoriaEvent(noteStartPPQ, noteEndPPQ))
+                    end
+                end
             end
         end
         return result
@@ -164,37 +175,60 @@ local function mergeCrossfadeEvents(crossfades, spikes)
     return result
 end
 
+local function handleKey(key)
+    if key == 0 then
+        return
+    end
+    
+    if key == 45 then -- Minus key
+        visibleRangeS = visibleRangeS * 1.1
+    elseif key == 61 then -- Equals key
+        visibleRangeS = visibleRangeS / 1.1
+    else
+        reaper.ShowMessageBox(tostring(key),"AAA",0)
+    end
+end
+
 -- This function has to be without arguments because it gets called by reaper itself
 -- so the tracks has to be global vars
 local function update()
     startGlog()
 
+    local thisFrame = reaper.time_precise()
     if notesTrack == nil then
         gfx.printf("ERROR: Notes track not found")
     else 
         local startPPQ, endPPQ, PPQresolution = getPPQTimes(notesTrack,visibleRangeS)
-
-        glog(string.format("    Time: %f\t%f\t%f", startPPQ, endPPQ, PPQresolution))
+        local deltaTime = thisFrame - lastFrame
+        glog(string.format("%f FPS", 1 / deltaTime))
 
         local notesInFrame = getNotesInFrame(notesTrack, startPPQ, endPPQ)
         if notesInFrame == nil then
             glog("ERROR: Could not find compatible midi take")
         else
             local mergedCross = mergeCrossfadeEvents(notesInFrame.crossfades, notesInFrame.spikes)
+            for _,evt in ipairs(mergedCross) do
+                glog(string.format("%d", evt.type))
+            end
             --draw stuff
+            drawEuphoriaZones(startPPQ, endPPQ, notesInFrame.euphoria)
             drawZones(startPPQ, mergedCross)
             drawCrossfades(startPPQ, endPPQ, mergedCross)
             drawTaps(startPPQ, endPPQ, PPQresolution, notesInFrame.taps, mergedCross)
             drawScratchZones(startPPQ, endPPQ, notesInFrame.scratchZones, mergedCross)
             drawScratches(startPPQ, endPPQ, PPQresolution, notesInFrame.scratches, mergedCross)
         end
-
     end
+
     gfx.update()
 
+    lastFrame = thisFrame
+
     -- gfx.getchar() returns -1 if the window is closed
-    if gfx.getchar() ~= -1 then
+    local key = gfx.getchar()
+    if key ~= -1 then
         --think of this as JS's RequestAnimationFrame
+        handleKey(key)
         reaper.defer(update)
     end
 end
