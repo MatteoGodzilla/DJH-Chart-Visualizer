@@ -73,14 +73,14 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                     --by default outwards spikes have crossfade center as base position
                     crossfadeHistory[1] = CFSpikeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.RED, CrossfadePos.GREEN)
                     if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
-                        table.insert(result.spikes, crossfadeHistory[1]) 
+                        table.insert(result.spikes, crossfadeHistory[1])
                     end
                 elseif notePitch == NOTES2MIDI.SPIKE_R then
                     crossfadeHistory[3] = crossfadeHistory[2]
                     crossfadeHistory[2] = crossfadeHistory[1]
                     crossfadeHistory[1] = CFSpikeEvent(noteStartPPQ, noteEndPPQ, crossfadeHistory[2].position, CrossfadePos.GREEN)
                     if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
-                        table.insert(result.spikes, crossfadeHistory[1]) 
+                        table.insert(result.spikes, crossfadeHistory[1])
                     end
                 elseif notePitch == NOTES2MIDI.SPIKE_B then
                     crossfadeHistory[3] = crossfadeHistory[2]
@@ -88,7 +88,7 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                     --by default outwards spikes have crossfade center as base position
                     crossfadeHistory[1] = CFSpikeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.RED, CrossfadePos.BLUE)
                     if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
-                        table.insert(result.spikes, crossfadeHistory[1]) 
+                        table.insert(result.spikes, crossfadeHistory[1])
                     end
                 end
 
@@ -99,7 +99,7 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                         crossfadeHistory[2].position = crossfadeHistory[1].position
                     end
                 end
-                
+
 
                 --check for taps
                 if notePitch == NOTES2MIDI.TAP_G then
@@ -166,7 +166,7 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
     end
 end
 
---[CrossfadeEvent], [CFSpikeEvent] -> sorted [CrossfadeEvent | CFSpikeEvent] 
+--[CrossfadeEvent], [CFSpikeEvent] -> sorted [CrossfadeEvent | CFSpikeEvent]
 local function mergeCrossfadeEvents(crossfades, spikes)
     local result = {}
     for _, crossfade in ipairs(crossfades) do
@@ -186,7 +186,7 @@ local function handleKey(key)
     if key == 0 then
         return
     end
-    
+
     if key == 45 then -- Minus key
         visibleRangeS = visibleRangeS * 1.1
     elseif key == 61 then -- Equals key
@@ -204,7 +204,7 @@ local function update()
     local thisFrame = reaper.time_precise()
     if notesTrack == nil then
         gfx.printf("ERROR: Notes track not found")
-    else 
+    else
         local startPPQ, endPPQ, PPQresolution = getPPQTimes(notesTrack,visibleRangeS)
         local deltaTime = thisFrame - lastFrame
         glog(string.format("%f FPS", 1 / deltaTime))

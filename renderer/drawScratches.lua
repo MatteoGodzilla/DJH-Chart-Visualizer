@@ -19,7 +19,7 @@ local function drawSingleScratch(startPPQ, endPPQ, scratch, cfPos)
         if cfPos == CrossfadePos.GREEN then
             greenXOffset = -2*UNIT
         end
-        local image = nil 
+        local image = nil
         if scratch.direction == ScratchDir.UP then
             image = IMAGES.SCRATCH_G_UP
         elseif scratch.direction == ScratchDir.DOWN then
@@ -35,7 +35,7 @@ local function drawSingleScratch(startPPQ, endPPQ, scratch, cfPos)
         if cfPos == CrossfadePos.BLUE then
             blueXOffset = 2*UNIT
         end
-        local image = nil 
+        local image = nil
         if scratch.direction == ScratchDir.UP then
             image = IMAGES.SCRATCH_B_UP
         elseif scratch.direction == ScratchDir.DOWN then
@@ -56,7 +56,7 @@ function drawScratches(startPPQ, endPPQ, PPQResolution, scratches, mergedCross)
         local cfPos = getCrossfadePosAt(scratch.startPPQ, mergedCross)
         if scratch.endPPQ - scratch.startPPQ <= PPQResolution / 4 then
             drawSingleScratch(startPPQ, endPPQ, scratch, cfPos)
-        else 
+        else
             drawScratchTrail(startPPQ, endPPQ, scratch, crossfades, spikes)
             drawSingleScratch(startPPQ, endPPQ, scratch, cfPos)
         end

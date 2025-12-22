@@ -3,20 +3,21 @@ local function drawSingleZoneSegment(startPPQ, endPPQ, zoneSegment, cfPos)
     local endP = (zoneSegment.endPPQ - startPPQ) / (endPPQ - startPPQ)
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
     local endY = ORIGIN_Y + endP * (-ORIGIN_Y)
+    local alpha = 0.66
 
     if zoneSegment.position == CrossfadePos.GREEN then
         local xOffset = -UNIT
         if cfPos == CrossfadePos.GREEN then
             xOffset = -2*UNIT
         end
-        gfx.set(0.05, 0.81, 0.10)
+        gfx.set(0.05, 0.81, 0.10, alpha)
         gfx.rect(ORIGIN_X + xOffset - UNIT/2, endY, UNIT, startY - endY + UNIT / 2)
     elseif zoneSegment.position == CrossfadePos.BLUE then
         local xOffset = UNIT
         if cfPos == CrossfadePos.BLUE then
             xOffset = 2*UNIT
         end
-        gfx.set(0.14, 0.66, 0.93)
+        gfx.set(0.14, 0.66, 0.93, alpha)
         gfx.rect(ORIGIN_X + xOffset - UNIT/2, endY, UNIT, startY - endY + UNIT / 2)
     end
 end
@@ -27,7 +28,5 @@ function drawScratchZones(startPPQ, endPPQ, scratchZones, mergedCross)
         --split zone based on mergedCross in order to have separate segments to draw
         local cfPos = getCrossfadePosAt(zone.startPPQ, mergedCross)
         drawSingleZoneSegment(startPPQ, endPPQ, zone, cfPos)
-    end                                                            
-end                                                                
-                                                                   
-                                                                   
+    end
+end

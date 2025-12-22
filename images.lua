@@ -3,14 +3,14 @@ require ("ImageData")
 local function getScriptDir()
     local _, filename = reaper.get_action_context()
     --regex to remove the last part of the filename, which contains images.lua
-    --basic idea: capture all chars before the / 
+    --basic idea: capture all chars before the /
     --since matching is greedy, it gets up until the last directory
     return filename:match("(.*[/\\])")
 end
 
 local baseDir = getScriptDir() .. "images/"
-local tapsImage       = gfx.loadimg(0, baseDir.."taps.png") 
-local zonesImage      = gfx.loadimg(1, baseDir.."zones.png") 
+local tapsImage       = gfx.loadimg(0, baseDir.."taps.png")
+local zonesImage      = gfx.loadimg(1, baseDir.."zones.png")
 local crossImage      = gfx.loadimg(2, baseDir.."cross.png")
 local laneImage       = gfx.loadimg(3, baseDir.."lanes.png")
 local greenSpikes     = gfx.loadimg(4, baseDir.."greenSpikes.png")
@@ -27,20 +27,20 @@ local u = 512
 --TODO: hold tap trail
 --TODO: freestyle
 return {
-    TAP_G_L0 = ImageData(tapsImage,0*u,0*u,1*u,1*u), 
-    TAP_G_L1 = ImageData(tapsImage,1*u,0*u,1*u,1*u), 
-    TAP_G_L2 = ImageData(tapsImage,2*u,0*u,1*u,1*u), 
-    TAP_G_L3 = ImageData(tapsImage,3*u,0*u,1*u,1*u), 
+    TAP_G_L0 = ImageData(tapsImage,0*u,0*u,1*u,1*u),
+    TAP_G_L1 = ImageData(tapsImage,1*u,0*u,1*u,1*u),
+    TAP_G_L2 = ImageData(tapsImage,2*u,0*u,1*u,1*u),
+    TAP_G_L3 = ImageData(tapsImage,3*u,0*u,1*u,1*u),
 
-    TAP_R_L0 = ImageData(tapsImage,0*u,1*u,1*u,1*u), 
-    TAP_R_L1 = ImageData(tapsImage,1*u,1*u,1*u,1*u), 
-    TAP_R_L2 = ImageData(tapsImage,2*u,1*u,1*u,1*u), 
-    TAP_R_L3 = ImageData(tapsImage,3*u,1*u,1*u,1*u), 
+    TAP_R_L0 = ImageData(tapsImage,0*u,1*u,1*u,1*u),
+    TAP_R_L1 = ImageData(tapsImage,1*u,1*u,1*u,1*u),
+    TAP_R_L2 = ImageData(tapsImage,2*u,1*u,1*u,1*u),
+    TAP_R_L3 = ImageData(tapsImage,3*u,1*u,1*u,1*u),
 
-    TAP_B_L0 = ImageData(tapsImage,0*u,2*u,1*u,1*u), 
-    TAP_B_L1 = ImageData(tapsImage,1*u,2*u,1*u,1*u), 
-    TAP_B_L2 = ImageData(tapsImage,2*u,2*u,1*u,1*u), 
-    TAP_B_L3 = ImageData(tapsImage,3*u,2*u,1*u,1*u), 
+    TAP_B_L0 = ImageData(tapsImage,0*u,2*u,1*u,1*u),
+    TAP_B_L1 = ImageData(tapsImage,1*u,2*u,1*u,1*u),
+    TAP_B_L2 = ImageData(tapsImage,2*u,2*u,1*u,1*u),
+    TAP_B_L3 = ImageData(tapsImage,3*u,2*u,1*u,1*u),
 
     ZONE_G    = ImageData(zonesImage,0*u,0*u,1*u,1*u),
     ZONE_R    = ImageData(zonesImage,1*u,0*u,1*u,1*u),
@@ -52,7 +52,7 @@ return {
     LANE_G_ACTIVE   = ImageData(laneImage,0*u,0*u,1*u,1*u), --vertical stretch
     LANE_G_EFFECTS  = ImageData(laneImage,1*u,0*u,1*u,1*u), --vertical stretch
     LANE_G_INACTIVE = ImageData(laneImage,2*u,0*u,1*u,1*u), --vertical stretch
-    
+
     LANE_R_ACTIVE   = ImageData(laneImage,0*u,1*u,1*u,1*u), --vertical stretch
     LANE_R_EFFECTS  = ImageData(laneImage,1*u,1*u,1*u,1*u), --vertical stretch
     LANE_R_INACTIVE = ImageData(laneImage,2*u,1*u,1*u,1*u), --vertical stretch
@@ -62,22 +62,22 @@ return {
     LANE_B_INACTIVE = ImageData(laneImage,2*u,2*u,1*u,1*u), --vertical stretch
 
     --transitions from a lane state to another
-    LANE_G_ACTIVE_TO_EFFECTS   = ImageData(greenLane, 1*u, 1*u/2, u, u/2), 
-    LANE_G_ACTIVE_TO_INACTIVE  = ImageData(greenLane, 0*u, 0*u/2, u, u/2), 
+    LANE_G_ACTIVE_TO_EFFECTS   = ImageData(greenLane, 1*u, 1*u/2, u, u/2),
+    LANE_G_ACTIVE_TO_INACTIVE  = ImageData(greenLane, 0*u, 0*u/2, u, u/2),
     LANE_G_EFFECTS_TO_ACTIVE   = ImageData(greenLane, 1*u, 0*u/2, u, u/2),
     LANE_G_EFFECTS_TO_INACTIVE = ImageData(greenLane, 2*u, 0*u/2, u, u/2),
     LANE_G_INACTIVE_TO_ACTIVE  = ImageData(greenLane, 0*u, 1*u/2, u, u/2),
     LANE_G_INACTIVE_TO_EFFECTS = ImageData(greenLane, 2*u, 1*u/2, u, u/2),
 
-    LANE_R_ACTIVE_TO_EFFECTS   = ImageData(redLane, 1*u, 1*u/2, u, u/2), 
-    LANE_R_ACTIVE_TO_INACTIVE  = ImageData(redLane, 0*u, 0*u/2, u, u/2), 
+    LANE_R_ACTIVE_TO_EFFECTS   = ImageData(redLane, 1*u, 1*u/2, u, u/2),
+    LANE_R_ACTIVE_TO_INACTIVE  = ImageData(redLane, 0*u, 0*u/2, u, u/2),
     LANE_R_EFFECTS_TO_ACTIVE   = ImageData(redLane, 1*u, 0*u/2, u, u/2),
     LANE_R_EFFECTS_TO_INACTIVE = ImageData(redLane, 2*u, 0*u/2, u, u/2),
     LANE_R_INACTIVE_TO_ACTIVE  = ImageData(redLane, 0*u, 1*u/2, u, u/2),
     LANE_R_INACTIVE_TO_EFFECTS = ImageData(redLane, 2*u, 1*u/2, u, u/2),
 
-    LANE_B_ACTIVE_TO_EFFECTS   = ImageData(blueLane, 1*u, 1*u/2, u, u/2), 
-    LANE_B_ACTIVE_TO_INACTIVE  = ImageData(blueLane, 0*u, 0*u/2, u, u/2), 
+    LANE_B_ACTIVE_TO_EFFECTS   = ImageData(blueLane, 1*u, 1*u/2, u, u/2),
+    LANE_B_ACTIVE_TO_INACTIVE  = ImageData(blueLane, 0*u, 0*u/2, u, u/2),
     LANE_B_EFFECTS_TO_ACTIVE   = ImageData(blueLane, 1*u, 0*u/2, u, u/2),
     LANE_B_EFFECTS_TO_INACTIVE = ImageData(blueLane, 2*u, 0*u/2, u, u/2),
     LANE_B_INACTIVE_TO_ACTIVE  = ImageData(blueLane, 0*u, 1*u/2, u, u/2),
@@ -113,7 +113,7 @@ return {
     CROSS_B_RIGHT_FRONT_ACTIVE   = ImageData(blueCrossfade,1*u,0*u,u,u),
     CROSS_B_RIGHT_FRONT_EFFECTS  = ImageData(blueCrossfade,3*u,0*u,u,u),
     --CROSS_B_RIGHT_FRONT_INACTIVE = ImageData(blueCrossfade,5*u,0*u,u,u), --does not make sense
-   
+
     --spikes for the left side
     SPIKE_G_BACK_LEFT_ACTIVE     = ImageData(greenSpikes,0*u ,0*u,2*u,u/2),
     SPIKE_G_BACK_LEFT_EFFECTS    = ImageData(greenSpikes,2*u ,0*u,2*u,u/2),

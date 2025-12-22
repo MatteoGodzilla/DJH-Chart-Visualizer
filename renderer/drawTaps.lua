@@ -45,7 +45,7 @@ function drawTaps(startPPQ, endPPQ, PPQResolution, taps, mergedCross)
         local cfPos = getCrossfadePosAt(tap.startPPQ, mergedCross)
         if tap.endPPQ - tap.startPPQ <= PPQResolution / 4 then
             drawSingleTap(startPPQ, endPPQ, tap, cfPos)
-        else 
+        else
             drawTapTrail(startPPQ, endPPQ, tap, crossfades, spikes)
             drawSingleTap(startPPQ, endPPQ, tap, cfPos)
         end

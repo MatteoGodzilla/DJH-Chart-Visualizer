@@ -1,4 +1,4 @@
---Constants 
+--Constants
 WIDTH = 800
 HEIGHT = 600
 UNIT = 80 --pixels, same for horizontal and vertical

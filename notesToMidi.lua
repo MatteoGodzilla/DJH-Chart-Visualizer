@@ -34,7 +34,7 @@ return {
     EFFECTS_ALL = 22,
 
     EUPHORIA = 15,
-    
+
     --freestyle crossfade
     FS_CROSS_ZONE = 17,
     FS_CROSS_G_MARKER = 32,

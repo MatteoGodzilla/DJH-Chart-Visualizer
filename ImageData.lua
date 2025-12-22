@@ -1,4 +1,4 @@
---Because lua doesn't have structs, this is the closest thing to have uniform tables 
+--Because lua doesn't have structs, this is the closest thing to have uniform tables
 function ImageData(source, x, y, w, h)
     return {
         src = source,

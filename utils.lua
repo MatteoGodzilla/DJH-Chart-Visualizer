@@ -28,7 +28,7 @@ function startGlog()
 end
 
 function glog(str)
-    gfx.x = 0 
+    gfx.x = 0
     gfx.y = logY
     gfx.set(1,1,1)
 
@@ -47,7 +47,7 @@ function getPPQTimes(track, rangeS)
     local midiTake = reaper.GetMediaItemTake(reaper.GetTrackMediaItem(track, 0), 0)
     if not reaper.TakeIsMIDI(midiTake) then
         return 0, 1, 960 --just to avoid divisions by 0, this edge case should never happen anyway if used in the djh template
-    else 
+    else
         local playbackTimePPQ = reaper.MIDI_GetPPQPosFromProjTime(midiTake, playbackTimeS)
         local endTimePPQ = reaper.MIDI_GetPPQPosFromProjTime(midiTake, endTimeS)
         local PPQresolution = reaper.MIDI_GetPPQPosFromProjQN(midiTake, 1)

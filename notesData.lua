@@ -1,7 +1,7 @@
 --Consider as an enum type
 CrossfadePos = {
     GREEN = 0,
-    RED = 1, 
+    RED = 1,
     BLUE = 2
 }
 
@@ -39,7 +39,7 @@ ScratchDir = {
 
 local function Event(eventType, startTime, endTime)
     return {
-        type = eventType, 
+        type = eventType,
         startPPQ = startTime,
         endPPQ = endTime
     }

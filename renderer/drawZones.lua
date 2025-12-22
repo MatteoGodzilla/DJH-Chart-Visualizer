@@ -17,11 +17,11 @@ function drawZones(startPPQ, mergedCross)
     local first = mergedCross[1]
     if first.type == EventType.CROSS then
         --it is currently on a crossfade
-        --assume that 
+        --assume that
         if first.position == CrossfadePos.GREEN then
-            greenOffset = -UNIT * 2       
+            greenOffset = -UNIT * 2
         elseif first.position == CrossfadePos.BLUE then
-            blueOffset = UNIT *2   
+            blueOffset = UNIT *2
         end
     elseif first.type == EventType.SPIKE then
         --it is currently on a spike
@@ -38,7 +38,7 @@ function drawZones(startPPQ, mergedCross)
         elseif first.position == CrossfadePos.RED then
             --either red-green-red or red-blue-red
             if first.tipPosition == CrossfadePos.GREEN then
-                greenOffset = -UNIT - UNIT * triangle 
+                greenOffset = -UNIT - UNIT * triangle
             elseif first.tipPosition == CrossfadePos.BLUE then
                 blueOffset = UNIT + UNIT * triangle
             end
