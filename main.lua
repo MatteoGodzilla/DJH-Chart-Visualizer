@@ -35,64 +35,71 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
         if reaper.TakeIsMIDI(midiTake) then
             local _retval, noteCount, _ccEventCount, _textEventCount = reaper.MIDI_CountEvts(midiTake)
 
-            local lastCrossfade = CrossfadePos.RED
-            local consecutiveSpikesCount = 0
-            local lastAddedSpike = nil
+            --local lastCrossfade = CrossfadePos.RED
+            local crossfadeHistory = { [1] = nil, [2] = nil, [3] = nil}
 
             for i=0, noteCount - 1 do
                 local retval, isNoteSelected, isNoteMuted, noteStartPPQ, noteEndPPQ, noteChannel, notePitch, noteVelocity = reaper.MIDI_GetNote(midiTake, i)
 
                 --check for crossfades
                 if notePitch == NOTES2MIDI.CROSS_G then
+                    crossfadeHistory[3] = crossfadeHistory[2]
+                    crossfadeHistory[2] = crossfadeHistory[1]
+                    crossfadeHistory[1] = CrossfadeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.GREEN)
                     if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
-                        table.insert(result.crossfades, CrossfadeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.GREEN))
+                        table.insert(result.crossfades, crossfadeHistory[1])
                     end
-                    lastCrossfade = CrossfadePos.GREEN
-                    consecutiveSpikesCount = 0
                 elseif notePitch == NOTES2MIDI.CROSS_R then
+                    crossfadeHistory[3] = crossfadeHistory[2]
+                    crossfadeHistory[2] = crossfadeHistory[1]
+                    crossfadeHistory[1] = CrossfadeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.RED)
                     if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
-                        table.insert(result.crossfades, CrossfadeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.RED))
+                        table.insert(result.crossfades, crossfadeHistory[1])
                     end
-                    lastCrossfade = CrossfadePos.RED
-                    consecutiveSpikesCount = 0
                 elseif notePitch == NOTES2MIDI.CROSS_B then
+                    crossfadeHistory[3] = crossfadeHistory[2]
+                    crossfadeHistory[2] = crossfadeHistory[1]
+                    crossfadeHistory[1] = CrossfadeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.BLUE)
                     if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
-                        table.insert(result.crossfades, CrossfadeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.BLUE))
+                        table.insert(result.crossfades, crossfadeHistory[1])
                     end
-                    lastCrossfade = CrossfadePos.BLUE
-                    consecutiveSpikesCount = 0
                 end
 
                 --check for spikes
-                if consecutiveSpikesCount == 1
-                    and (notePitch == NOTES2MIDI.SPIKE_G or notePitch == NOTES2MIDI.SPIKE_R or notePitch == NOTES2MIDI.SPIKE_B)
-                then
-                    lastCrossfade = CrossfadePos.RED
-                    --need to adjust the first spike, since it could have green or blue set as base
-                    if lastAddedSpike ~= nil then
-                        lastAddedSpike.position = CrossfadePos.RED
+
+                if notePitch == NOTES2MIDI.SPIKE_G then
+                    crossfadeHistory[3] = crossfadeHistory[2]
+                    crossfadeHistory[2] = crossfadeHistory[1]
+                    --by default outwards spikes have crossfade center as base position
+                    crossfadeHistory[1] = CFSpikeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.RED, CrossfadePos.GREEN)
+                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
+                        table.insert(result.spikes, crossfadeHistory[1]) 
+                    end
+                elseif notePitch == NOTES2MIDI.SPIKE_R then
+                    crossfadeHistory[3] = crossfadeHistory[2]
+                    crossfadeHistory[2] = crossfadeHistory[1]
+                    crossfadeHistory[1] = CFSpikeEvent(noteStartPPQ, noteEndPPQ, crossfadeHistory[2].position, CrossfadePos.GREEN)
+                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
+                        table.insert(result.spikes, crossfadeHistory[1]) 
+                    end
+                elseif notePitch == NOTES2MIDI.SPIKE_B then
+                    crossfadeHistory[3] = crossfadeHistory[2]
+                    crossfadeHistory[2] = crossfadeHistory[1]
+                    --by default outwards spikes have crossfade center as base position
+                    crossfadeHistory[1] = CFSpikeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.RED, CrossfadePos.BLUE)
+                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
+                        table.insert(result.spikes, crossfadeHistory[1]) 
                     end
                 end
 
-                if notePitch == NOTES2MIDI.SPIKE_G then
-                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
-                        lastAddedSpike = CFSpikeEvent(noteStartPPQ, noteEndPPQ, lastCrossfade, CrossfadePos.GREEN)
-                        table.insert(result.spikes, lastAddedSpike) 
+                --adjust spikes if needed
+                if crossfadeHistory[1] ~= nil and crossfadeHistory[2] ~= nil and crossfadeHistory[3] ~= nil then
+                    --if we have a situation like CROSS_G, SPIKE_B, CROSS_G then the middle spike has to be adjusted in order to have base position CROSS_G
+                    if crossfadeHistory[2].type == EventType.SPIKE and crossfadeHistory[1].position == crossfadeHistory[3].position then
+                        crossfadeHistory[2].position = crossfadeHistory[1].position
                     end
-                    consecutiveSpikesCount = consecutiveSpikesCount + 1
-                elseif notePitch == NOTES2MIDI.SPIKE_R then
-                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
-                        lastAddedSpike = CFSpikeEvent(noteStartPPQ, noteEndPPQ, lastCrossfade, CrossfadePos.RED)
-                        table.insert(result.spikes, lastAddedSpike) 
-                    end
-                    consecutiveSpikesCount = consecutiveSpikesCount + 1
-                elseif notePitch == NOTES2MIDI.SPIKE_B then
-                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
-                        lastAddedSpike = CFSpikeEvent(noteStartPPQ, noteEndPPQ, lastCrossfade, CrossfadePos.BLUE)
-                        table.insert(result.spikes, lastAddedSpike) 
-                    end
-                    consecutiveSpikesCount = consecutiveSpikesCount + 1
                 end
+                
 
                 --check for taps
                 if notePitch == NOTES2MIDI.TAP_G then
@@ -185,7 +192,7 @@ local function handleKey(key)
     elseif key == 61 then -- Equals key
         visibleRangeS = visibleRangeS / 1.1
     else
-        reaper.ShowMessageBox(tostring(key),"AAA",0)
+        --reaper.ShowMessageBox(tostring(key),"AAA",0)
     end
 end
 
@@ -208,7 +215,11 @@ local function update()
         else
             local mergedCross = mergeCrossfadeEvents(notesInFrame.crossfades, notesInFrame.spikes)
             for _,evt in ipairs(mergedCross) do
-                glog(string.format("%d", evt.type))
+                if evt.type == EventType.CROSS then
+                    glog(string.format("Cross: %d", evt.position))
+                elseif evt.type == EventType.SPIKE then
+                    glog(string.format("Spike: %d %d", evt.position, evt.tipPosition))
+                end
             end
             --draw stuff
             drawEuphoriaZones(startPPQ, endPPQ, notesInFrame.euphoria)
