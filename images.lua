@@ -21,6 +21,9 @@ local scratches       = gfx.loadimg(8, baseDir.."scratches.png")
 local greenLane       = gfx.loadimg(9, baseDir.."greenLaneTransitions.png")
 local redLane         = gfx.loadimg(10, baseDir.."redLaneTransitions.png")
 local blueLane        = gfx.loadimg(11, baseDir.."blueLaneTransitions.png")
+local greenTapTrail   = gfx.loadimg(12, baseDir.."greenTapTrail.png")
+local redTapTrail     = gfx.loadimg(13, baseDir.."redTapTrail.png")
+local blueTapTrail    = gfx.loadimg(14, baseDir.."blueTapTrail.png")
 
 local u = 512
 
@@ -150,5 +153,21 @@ return {
     SCRATCH_B_UP     = ImageData(scratches, 1*u, 0*u, u, u),
     SCRATCH_B_DOWN   = ImageData(scratches, 2*u, 0*u, u, u),
     SCRATCH_B_ANYDIR = ImageData(scratches, 0*u, 0*u, u, u),
+
+    --tap trail 
+    TAP_TRAIL_G_FILL     = ImageData(greenTapTrail, 0*u, 0*u, 1*u, 1*u),
+    TAP_TRAIL_G_TO_LEFT  = ImageData(greenTapTrail, 2*u, 0*u, 2*u, 1*u),
+    TAP_TRAIL_G_TO_RIGHT = ImageData(greenTapTrail, 4*u, 0*u, 2*u, 1*u),
+    TAP_TRAIL_G_END      = ImageData(greenTapTrail, 1*u, 0*u, 1*u, 1*u),
+
+    TAP_TRAIL_R_FILL     = ImageData(redTapTrail, 0*u, 0*u, 1*u, 1*u),
+    --TAP_TRAIL_R_TO_LEFT  = ImageData(redTapTrail, 2*u, 0*u, 2*u, 1*u),
+    --TAP_TRAIL_R_TO_RIGHT = ImageData(redTapTrail, 4*u, 0*u, 2*u, 1*u),
+    TAP_TRAIL_R_END      = ImageData(redTapTrail, 1*u, 0*u, 1*u, 1*u),
+
+    TAP_TRAIL_B_FILL     = ImageData(blueTapTrail, 0*u, 0*u, 1*u, 1*u),
+    TAP_TRAIL_B_TO_LEFT  = ImageData(blueTapTrail, 2*u, 0*u, 2*u, 1*u),
+    TAP_TRAIL_B_TO_RIGHT = ImageData(blueTapTrail, 4*u, 0*u, 2*u, 1*u),
+    TAP_TRAIL_B_END      = ImageData(blueTapTrail, 1*u, 0*u, 1*u, 1*u)
 }
 

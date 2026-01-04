@@ -70,3 +70,20 @@ end
 function PPQComparator(a, b)
     return a.startPPQ < b.startPPQ
 end
+
+--Event, [CrossfadeEvent | CFSpikeEvent] 
+--returns [CrossfadeEvent]
+function getCrossfadeRegionsInEvent(event, mergedCross)
+    local result = {}
+   
+    for _, cross in ipairs(mergedCross) do
+        if event.startPPQ < cross.endPPQ and cross.startPPQ < event.endPPQ then
+            -- we have an intersection between the two
+            local startPPQ = math.max(event.startPPQ, cross.startPPQ)
+            local endPPQ = math.min(event.endPPQ, cross.endPPQ)
+            table.insert(result, CrossfadeEvent(startPPQ, endPPQ, cross.position))
+        end
+    end
+
+    return result
+end
