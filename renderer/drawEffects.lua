@@ -7,7 +7,7 @@ local function drawEffectZone(startPPQ, endPPQ, effect)
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
     local endY = ORIGIN_Y + endP * (-ORIGIN_Y)
 
-    gfx.set(1,1,0,0.5)
+    gfx.set(0.847,0.612,0,0.5)
     if effect.mask & EffectMask.GREEN > 0 then
         gfx.rect(ORIGIN_X - 2.5*UNIT, endY, 2*UNIT, startY - endY)
     end

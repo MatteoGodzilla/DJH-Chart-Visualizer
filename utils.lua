@@ -38,19 +38,23 @@ function glog(str)
 end
 
 --returns startPPQ, endPPQ, PPQResolution
-function getPPQTimes(track, rangeS)
-    local playbackTimeS = reaper.GetCursorPositionEx(0)
-    if reaper.GetPlayStateEx(0) == 1 then
-        playbackTimeS = reaper.GetPlayPositionEx(0)
-    end
-    local endTimeS = playbackTimeS + rangeS
+function getPPQTimes(track, pixelsPerBeat, availableHeight)
     local midiTake = reaper.GetMediaItemTake(reaper.GetTrackMediaItem(track, 0), 0)
     if not reaper.TakeIsMIDI(midiTake) then
         return 0, 1, 960 --just to avoid divisions by 0, this edge case should never happen anyway if used in the djh template
     else
+        local playbackTimeS = reaper.GetCursorPositionEx(0)
+        if reaper.GetPlayStateEx(0) == 1 then
+            playbackTimeS = reaper.GetPlayPositionEx(0)
+        end
         local playbackTimePPQ = reaper.MIDI_GetPPQPosFromProjTime(midiTake, playbackTimeS)
-        local endTimePPQ = reaper.MIDI_GetPPQPosFromProjTime(midiTake, endTimeS)
+        local beatsVisible = availableHeight / pixelsPerBeat
+
+        --local endTimeS = playbackTimeS + rangeS
+        --local endTimePPQ = reaper.MIDI_GetPPQPosFromProjTime(midiTake, endTimeS)
         local PPQresolution = reaper.MIDI_GetPPQPosFromProjQN(midiTake, 1)
+        local endTimePPQ = playbackTimePPQ + PPQresolution * beatsVisible
+
         return playbackTimePPQ, endTimePPQ, PPQresolution
     end
 end
@@ -86,4 +90,10 @@ function getCrossfadeRegionsInEvent(event, mergedCross)
     end
 
     return result
+end
+
+--number, number, number
+--returns number in range [0,1)
+function getPercentage(event, startPPQ, endPPQ)
+    return (event - startPPQ) / (endPPQ - startPPQ)
 end

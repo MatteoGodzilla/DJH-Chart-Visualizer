@@ -9,13 +9,14 @@ require("renderer/drawScratches")
 require("renderer/drawScratchZones")
 require("renderer/drawEuphoria")
 require("renderer/drawEffects")
+require("renderer/drawSections")
 
 --Other globals
 local notesTrack = nil
 local effectsTrack = nil
 
-local visibleRangeS = 1.0
-local crossfadeWidth = 20 --pixels
+--number of beats visible
+local pixelsPerBeat = 2*UNIT
 
 local lastFrame = reaper.time_precise()
 
@@ -31,11 +32,12 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
             scratches = {},
             scratchZones = {},
             euphoria = {},
-            effects = {}
+            effects = {},
+            sections = {}
         }
         local midiTake = reaper.GetMediaItemTake(reaper.GetTrackMediaItem(notesTrack, 0), 0)
         if reaper.TakeIsMIDI(midiTake) then
-            local _retval, noteCount, _ccEventCount, _textEventCount = reaper.MIDI_CountEvts(midiTake)
+            local _retval, noteCount, _ccEventCount, textEventCount = reaper.MIDI_CountEvts(midiTake)
 
             --local lastCrossfade = CrossfadePos.RED
             local crossfadeHistory = { [1] = nil, [2] = nil, [3] = nil}
@@ -182,6 +184,17 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                     end
                 end
             end
+
+
+            for i=1, textEventCount do
+                local _retval, _selected, _muted, ppqpos, type, msg = reaper.MIDI_GetTextSysexEvt(midiTake, i)
+                if type == 1 then
+                    if ppqpos < endPPQ and startPPQ < ppqpos then
+                        table.insert(result.sections, SectionEvent(ppqpos, msg))
+                    end
+                    --glog(msg)
+                end
+            end
         end
         return result
     end
@@ -206,10 +219,12 @@ local function handleKey(key)
         return
     end
 
+    local FACTOR = 1.1
+
     if key == 45 then -- Minus key
-        visibleRangeS = visibleRangeS * 1.1
+        pixelsPerBeat = pixelsPerBeat / FACTOR
     elseif key == 61 then -- Equals key
-        visibleRangeS = visibleRangeS / 1.1
+        pixelsPerBeat = pixelsPerBeat * FACTOR
     else
         --reaper.ShowMessageBox(tostring(key),"AAA",0)
     end
@@ -224,7 +239,8 @@ local function update()
     if notesTrack == nil then
         gfx.printf("ERROR: Notes track not found")
     else
-        local startPPQ, endPPQ, PPQresolution = getPPQTimes(notesTrack,visibleRangeS)
+        updateOrigin(gfx.w, gfx.h)
+        local startPPQ, endPPQ, PPQresolution = getPPQTimes(notesTrack,pixelsPerBeat, ORIGIN_Y)
         local deltaTime = thisFrame - lastFrame
         glog(string.format("%f FPS", 1 / deltaTime))
 
@@ -242,6 +258,8 @@ local function update()
             drawScratchZones(startPPQ, endPPQ, notesInFrame.scratchZones, mergedCross)
             drawScratches(startPPQ, endPPQ, PPQresolution, notesInFrame.scratches, mergedCross)
             drawEffectsHandle(startPPQ, endPPQ, notesInFrame.effects)
+
+            drawSections(startPPQ, endPPQ, notesInFrame.sections)
         end
     end
 
@@ -259,6 +277,8 @@ local function update()
 end
 
 local function main()
+    local WIDTH = 800
+    local HEIGHT = 600
     gfx.init("DJH-Chart-Visualizer", WIDTH, HEIGHT)
     gfx.setfont(1, "Arial", 20)
 

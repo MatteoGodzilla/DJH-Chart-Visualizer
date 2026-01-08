@@ -13,6 +13,7 @@ EventType = {
     SCRATCH_ZONE = 5,
     EUPHORIA = 6,
     EFFECTS = 7,
+    SECTION = 8,
 }
 
 EffectMask = {
@@ -36,8 +37,9 @@ ScratchDir = {
 --| | TapEvent
 --| | ScratchEvent
 --| | ScratchZoneEvent
---| Euphoria
---| Effect
+--| EuphoriaEvent
+--| EffectEvent
+--| SectionEvent
 
 local function Event(eventType, startTime, endTime)
     return {
@@ -87,3 +89,10 @@ function EffectEvent(startTime, endTime, mask)
     res.mask = mask
     return res
 end
+
+function SectionEvent(time, name)
+    local res = Event(EventType.SECTION, time, time)
+    res.text = name
+    return res
+end
+
