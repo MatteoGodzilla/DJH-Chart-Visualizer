@@ -12,6 +12,7 @@ EventType = {
     SCRATCH = 4,
     SCRATCH_ZONE = 5,
     EUPHORIA = 6,
+    EFFECTS = 7,
 }
 
 EffectMask = {
@@ -36,6 +37,7 @@ ScratchDir = {
 --| | ScratchEvent
 --| | ScratchZoneEvent
 --| Euphoria
+--| Effect
 
 local function Event(eventType, startTime, endTime)
     return {
@@ -78,4 +80,10 @@ end
 
 function EuphoriaEvent(startTime, endTime)
     return Event(EventType.EUPHORIA, startTime, endTime)
+end
+
+function EffectEvent(startTime, endTime, mask)
+    local res = Event(EventType.EFFECTS, startTime, endTime)
+    res.mask = mask
+    return res
 end

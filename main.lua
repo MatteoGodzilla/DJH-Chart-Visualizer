@@ -8,6 +8,7 @@ require("renderer/drawTaps")
 require("renderer/drawScratches")
 require("renderer/drawScratchZones")
 require("renderer/drawEuphoria")
+require("renderer/drawEffects")
 
 --Other globals
 local notesTrack = nil
@@ -29,7 +30,8 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
             taps = {},
             scratches = {},
             scratchZones = {},
-            euphoria = {}
+            euphoria = {},
+            effects = {}
         }
         local midiTake = reaper.GetMediaItemTake(reaper.GetTrackMediaItem(notesTrack, 0), 0)
         if reaper.TakeIsMIDI(midiTake) then
@@ -160,6 +162,25 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                         table.insert(result.euphoria, EuphoriaEvent(noteStartPPQ, noteEndPPQ))
                     end
                 end
+
+                --check for effects
+                if notePitch == NOTES2MIDI.EFFECTS_G then
+                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
+                        table.insert(result.effects, EffectEvent(noteStartPPQ, noteEndPPQ, EffectMask.GREEN))
+                    end
+                elseif notePitch == NOTES2MIDI.EFFECTS_R then
+                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
+                        table.insert(result.effects, EffectEvent(noteStartPPQ, noteEndPPQ, EffectMask.RED))
+                    end
+                elseif notePitch == NOTES2MIDI.EFFECTS_B then
+                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
+                        table.insert(result.effects, EffectEvent(noteStartPPQ, noteEndPPQ, EffectMask.BLUE))
+                    end
+                elseif notePitch == NOTES2MIDI.EFFECTS_ALL then
+                    if noteStartPPQ < endPPQ and startPPQ < noteEndPPQ then
+                        table.insert(result.effects, EffectEvent(noteStartPPQ, noteEndPPQ, EffectMask.ALL))
+                    end
+                end
             end
         end
         return result
@@ -170,11 +191,9 @@ end
 local function mergeCrossfadeEvents(crossfades, spikes)
     local result = {}
     for _, crossfade in ipairs(crossfades) do
-        --glog(string.format("CROSS: %d %d %d", crossfade.startPPQ, crossfade.endPPQ, crossfade.position))
         table.insert(result, crossfade)
     end
     for _, spike in ipairs(spikes) do
-        --glog(string.format("SPIKE: %d %d %d %d", spike.startPPQ, spike.endPPQ, spike.position, spike.tipPosition))
         table.insert(result, spike)
     end
 
@@ -214,20 +233,15 @@ local function update()
             glog("ERROR: Could not find compatible midi take")
         else
             local mergedCross = mergeCrossfadeEvents(notesInFrame.crossfades, notesInFrame.spikes)
-            for _,evt in ipairs(mergedCross) do
-                if evt.type == EventType.CROSS then
-                    glog(string.format("Cross: %d", evt.position))
-                elseif evt.type == EventType.SPIKE then
-                    glog(string.format("Spike: %d %d", evt.position, evt.tipPosition))
-                end
-            end
             --draw stuff
             drawEuphoriaZones(startPPQ, endPPQ, notesInFrame.euphoria)
+            drawEffectsZones(startPPQ, endPPQ, notesInFrame.effects)
             drawZones(startPPQ, mergedCross)
             drawCrossfades(startPPQ, endPPQ, mergedCross)
             drawTaps(startPPQ, endPPQ, PPQresolution, notesInFrame.taps, mergedCross)
             drawScratchZones(startPPQ, endPPQ, notesInFrame.scratchZones, mergedCross)
             drawScratches(startPPQ, endPPQ, PPQresolution, notesInFrame.scratches, mergedCross)
+            drawEffectsHandle(startPPQ, endPPQ, notesInFrame.effects)
         end
     end
 

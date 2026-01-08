@@ -9,21 +9,23 @@ local function getScriptDir()
 end
 
 local baseDir = getScriptDir() .. "images/"
-local tapsImage       = gfx.loadimg(0, baseDir.."taps.png")
-local zonesImage      = gfx.loadimg(1, baseDir.."zones.png")
-local crossImage      = gfx.loadimg(2, baseDir.."cross.png")
-local laneImage       = gfx.loadimg(3, baseDir.."lanes.png")
-local greenSpikes     = gfx.loadimg(4, baseDir.."greenSpikes.png")
-local blueSpikes      = gfx.loadimg(5, baseDir.."blueSpikes.png")
-local greenCrossfade  = gfx.loadimg(6, baseDir.."greenCrossfades.png")
-local blueCrossfade   = gfx.loadimg(7, baseDir.."blueCrossfades.png")
-local scratches       = gfx.loadimg(8, baseDir.."scratches.png")
-local greenLane       = gfx.loadimg(9, baseDir.."greenLaneTransitions.png")
+local tapsImage       = gfx.loadimg( 0, baseDir.."taps.png")
+local zonesImage      = gfx.loadimg( 1, baseDir.."zones.png")
+local crossImage      = gfx.loadimg( 2, baseDir.."cross.png")
+local laneImage       = gfx.loadimg( 3, baseDir.."lanes.png")
+local greenSpikes     = gfx.loadimg( 4, baseDir.."greenSpikes.png")
+local blueSpikes      = gfx.loadimg( 5, baseDir.."blueSpikes.png")
+local greenCrossfade  = gfx.loadimg( 6, baseDir.."greenCrossfades.png")
+local blueCrossfade   = gfx.loadimg( 7, baseDir.."blueCrossfades.png")
+local scratches       = gfx.loadimg( 8, baseDir.."scratches.png")
+local greenLane       = gfx.loadimg( 9, baseDir.."greenLaneTransitions.png")
 local redLane         = gfx.loadimg(10, baseDir.."redLaneTransitions.png")
 local blueLane        = gfx.loadimg(11, baseDir.."blueLaneTransitions.png")
 local greenTapTrail   = gfx.loadimg(12, baseDir.."greenTapTrail.png")
 local redTapTrail     = gfx.loadimg(13, baseDir.."redTapTrail.png")
 local blueTapTrail    = gfx.loadimg(14, baseDir.."blueTapTrail.png")
+local scratchTrail    = gfx.loadimg(15, baseDir.."scratchTrail.png")
+local effectsHandle   = gfx.loadimg(16, baseDir.."effectsHandle.png")
 
 local u = 512
 
@@ -168,6 +170,17 @@ return {
     TAP_TRAIL_B_FILL     = ImageData(blueTapTrail, 0*u, 0*u, 1*u, 1*u),
     TAP_TRAIL_B_TO_LEFT  = ImageData(blueTapTrail, 2*u, 0*u, 2*u, 1*u),
     TAP_TRAIL_B_TO_RIGHT = ImageData(blueTapTrail, 4*u, 0*u, 2*u, 1*u),
-    TAP_TRAIL_B_END      = ImageData(blueTapTrail, 1*u, 0*u, 1*u, 1*u)
+    TAP_TRAIL_B_END      = ImageData(blueTapTrail, 1*u, 0*u, 1*u, 1*u),
+
+    --scratch trail 
+    SCRATCH_TRAIL_FILL     = ImageData(scratchTrail, 0*u, 0*u, 1*u, 1*u),
+    SCRATCH_TRAIL_TO_LEFT  = ImageData(scratchTrail, 2*u, 0*u, 2*u, 1*u),
+    SCRATCH_TRAIL_TO_RIGHT = ImageData(scratchTrail, 4*u, 0*u, 2*u, 1*u),
+    SCRATCH_TRAIL_END      = ImageData(scratchTrail, 1*u, 0*u, 1*u, 1*u),
+
+    EFFECTS_HANDLE_GREEN = ImageData(effectsHandle, 0*u, 0  *u, 2*u, 0.5*u),
+    EFFECTS_HANDLE_RED   = ImageData(effectsHandle, 2*u, 0  *u, 1*u, 0.5*u),
+    EFFECTS_HANDLE_BLUE  = ImageData(effectsHandle, 3*u, 0  *u, 2*u, 0.5*u),
+    EFFECTS_HANDLE_ALL   = ImageData(effectsHandle, 0*u, 0.5*u, 5*u, 0.5*u),
 }
 
