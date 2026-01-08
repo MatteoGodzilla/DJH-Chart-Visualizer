@@ -37,8 +37,8 @@ return {
 
     --freestyle crossfade
     FS_CROSS_ZONE = 17,
-    FS_CROSS_G_MARKER = 32,
-    FS_CROSS_B_MARKER = 31,
+    FS_CROSS_G_MARKER = 31,
+    FS_CROSS_B_MARKER = 32,
 
     --both are combined into the same pitch in the midi
     --this is gonna be annoying

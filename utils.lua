@@ -1,14 +1,14 @@
 function getDJHTracks()
-    local notes = nil
-    local effects = nil
+    local notes = {}
+    local effects = {}
     --find mediatracks
     for i = 0, reaper.CountTracks(0)-1 do
         local track = reaper.GetTrack(0,i)
         local _, name = reaper.GetTrackName(track)
-        if name == "NOTES" then
-            notes = track
-        elseif name == "EFFECTS" then
-            effects = track
+        if string.sub(name, 1,#"NOTES") == "NOTES" then
+            table.insert(notes, track)
+        elseif string.sub(name,1,8) == "EFFECTS" then
+            table.insert(effects, track)
         end
     end
     return notes, efffects
@@ -96,4 +96,8 @@ end
 --returns number in range [0,1)
 function getPercentage(event, startPPQ, endPPQ)
     return (event - startPPQ) / (endPPQ - startPPQ)
+end
+
+function isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ)
+    return noteStartPPQ < endPPQ and startPPQ < noteEndPPQ
 end

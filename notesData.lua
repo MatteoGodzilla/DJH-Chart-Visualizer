@@ -14,6 +14,8 @@ EventType = {
     EUPHORIA = 6,
     EFFECTS = 7,
     SECTION = 8,
+    FS_CROSS = 9,
+    FS_CROSS_MARKER = 10
 }
 
 EffectMask = {
@@ -37,9 +39,11 @@ ScratchDir = {
 --| | TapEvent
 --| | ScratchEvent
 --| | ScratchZoneEvent
+--| | FSCrossMarkerEvent
 --| EuphoriaEvent
 --| EffectEvent
 --| SectionEvent
+--| FSCrossfadeEvent
 
 local function Event(eventType, startTime, endTime)
     return {
@@ -96,3 +100,10 @@ function SectionEvent(time, name)
     return res
 end
 
+function FSCrossfadeEvent(startTime, endTime)
+    return Event(EventType.FS_CROSS, startTime, endTime)
+end
+
+function FSCrossMarkerEvent(startTime, endTime, pos)
+    return EventWithPos(EventType.FS_CROSS_MARKER, startTime, endTime, pos)
+end
