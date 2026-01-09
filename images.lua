@@ -26,6 +26,8 @@ local redTapTrail     = gfx.loadimg(13, baseDir.."redTapTrail.png")
 local blueTapTrail    = gfx.loadimg(14, baseDir.."blueTapTrail.png")
 local scratchTrail    = gfx.loadimg(15, baseDir.."scratchTrail.png")
 local effectsHandle   = gfx.loadimg(16, baseDir.."effectsHandle.png")
+local fsCrossGreen    = gfx.loadimg(17, baseDir.."fsCrossfadeGreen.png")
+local fsCrossBlue     = gfx.loadimg(18, baseDir.."fsCrossfadeBlue.png")
 
 local u = 512
 
@@ -182,5 +184,21 @@ return {
     EFFECTS_HANDLE_RED   = ImageData(effectsHandle, 2*u, 0  *u, 1*u, 0.5*u),
     EFFECTS_HANDLE_BLUE  = ImageData(effectsHandle, 3*u, 0  *u, 2*u, 0.5*u),
     EFFECTS_HANDLE_ALL   = ImageData(effectsHandle, 0*u, 0.5*u, 5*u, 0.5*u),
+
+    --freestyle crossfade
+    FS_CROSS_G_ZONE_END    = ImageData(fsCrossGreen, 1*u,    0*u, 2*u, 0.25*u),
+    FS_CROSS_G_ZONE_MIDDLE = ImageData(fsCrossGreen, 1*u, 0.25*u, 2*u, 0.5 *u),
+    FS_CROSS_G_ZONE_START  = ImageData(fsCrossGreen, 1*u, 0.75*u, 2*u, 0.25*u),
+    FS_CROSS_B_ZONE_END    = ImageData(fsCrossBlue , 1*u,    0*u, 2*u, 0.25*u),
+    FS_CROSS_B_ZONE_MIDDLE = ImageData(fsCrossBlue , 1*u, 0.25*u, 2*u, 0.5 *u),
+    FS_CROSS_B_ZONE_START  = ImageData(fsCrossBlue , 1*u, 0.75*u, 2*u, 0.25*u),
+
+    FS_CROSS_G_MARKER_END    = ImageData(fsCrossGreen, 0*u,  0*u, 1*u, 32),
+    FS_CROSS_G_MARKER_MIDDLE = ImageData(fsCrossGreen, 0*u,   32, 1*u, u-64),
+    FS_CROSS_G_MARKER_START  = ImageData(fsCrossGreen, 0*u, u-32, 1*u, 32),
+    FS_CROSS_B_MARKER_END    = ImageData(fsCrossBlue , 0*u,  0*u, 1*u, 32),
+    FS_CROSS_B_MARKER_MIDDLE = ImageData(fsCrossBlue , 0*u,   32, 1*u, u-64),
+    FS_CROSS_B_MARKER_START  = ImageData(fsCrossBlue , 0*u, u-32, 1*u, 32),
+
 }
 

@@ -101,3 +101,41 @@ end
 function isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ)
     return noteStartPPQ < endPPQ and startPPQ < noteEndPPQ
 end
+
+--CrossfadeEvent, [FSCrossfadeEvent]
+--returns [CrossfadeEvent]
+function maskCrossfadeWithFSCross(crossfade, freestyle)
+    local bag = {}
+    local bag2 = {}
+    table.insert(bag, crossfade)
+    for i, fs in ipairs(freestyle) do
+        --cut the intervals using fs
+        for j, cross in ipairs(bag) do
+            --reduce end
+            local cut = false
+            if cross.startPPQ <= fs.startPPQ and fs.startPPQ < cross.endPPQ then
+                table.insert(bag2, CrossfadeEvent(cross.startPPQ, fs.startPPQ, cross.position))
+                cut = true
+            end
+            if cross.startPPQ <= fs.endPPQ and fs.endPPQ < cross.endPPQ then
+                table.insert(bag2, CrossfadeEvent(fs.endPPQ, cross.endPPQ, cross.position))
+                cut = true
+            end
+            if fs.startPPQ <= cross.startPPQ and cross.endPPQ < fs.endPPQ then
+                --freestyle completely contains crossfade
+                cut = true
+            end
+            if not cut then
+                table.insert(bag2, cross)
+            end
+        end
+        --move from bag2 to bag
+        bag = {}
+        for _, item in ipairs(bag2) do
+            table.insert(bag, item)
+        end
+        bag2 = {}
+    end
+    table.sort(bag, PPQComparator) 
+    return bag
+end
