@@ -11,6 +11,7 @@ require("renderer/drawEuphoria")
 require("renderer/drawEffects")
 require("renderer/drawSections")
 require("renderer/drawFSCrossfade")
+require("renderer/drawBeatIndicators")
 
 --Other globals
 local notesTracks = {}
@@ -275,7 +276,8 @@ local function update()
         local startPPQ, endPPQ, PPQresolution = getPPQTimes(notes,pixelsPerBeat, ORIGIN_Y)
         local deltaTime = thisFrame - lastFrame
         glog(string.format("%f FPS", 1 / deltaTime))
-        glog(string.format("Time: %s", startPPQ))
+        local measure, beat = PPQToMeasureBeats(startPPQ, PPQresolution)
+        glog(string.format("Time: %d.%d", measure, beat))
         local _, trackName = reaper.GetTrackName(notes)
         glog(string.format("Track %d of %d:%s", chosenNotesTrackIndex, #notesTracks, trackName))
 
@@ -285,6 +287,7 @@ local function update()
         else
             local mergedCross = mergeCrossfadeEvents(notesInFrame.crossfades, notesInFrame.spikes)
             --draw stuff
+            drawBeatIndicators(startPPQ, endPPQ, PPQresolution)
             drawEuphoriaZones(startPPQ, endPPQ, notesInFrame.euphoria)
             drawEffectsZones(startPPQ, endPPQ, notesInFrame.effects)
             drawZones(startPPQ, mergedCross)

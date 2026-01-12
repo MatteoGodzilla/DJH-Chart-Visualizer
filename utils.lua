@@ -99,7 +99,7 @@ function getPercentage(event, startPPQ, endPPQ)
 end
 
 function isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ)
-    return noteStartPPQ < endPPQ and startPPQ < noteEndPPQ
+    return noteStartPPQ < endPPQ and startPPQ <= noteEndPPQ
 end
 
 --CrossfadeEvent, [FSCrossfadeEvent]
@@ -138,4 +138,16 @@ function maskCrossfadeWithFSCross(crossfade, freestyle)
     end
     table.sort(bag, PPQComparator) 
     return bag
+end
+
+--NOTE: this does not use any reaper functions (because apparently they don't exist?)
+--and it assumes 4/4 time signature
+--in the case of djh it's not a problem, but for complex reaper projects with time signature changes
+--this WILL desync
+function PPQToMeasureBeats(timePPQ, PPQResolution)
+    local measureRaw = 1 + timePPQ / PPQResolution / 4
+    local measure = math.floor(measureRaw)
+    local beatsRaw = measureRaw - measure
+    local beat = math.floor(1 + beatsRaw * 4)
+    return measure, beat
 end
