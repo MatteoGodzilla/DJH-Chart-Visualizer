@@ -30,6 +30,7 @@ local fsCrossGreen    = gfx.loadimg(17, baseDir.."fsCrossfadeGreen.png")
 local fsCrossBlue     = gfx.loadimg(18, baseDir.."fsCrossfadeBlue.png")
 local beatMarker      = gfx.loadimg(19, baseDir.."beatMarker.png")
 local rewindMarker    = gfx.loadimg(20, baseDir.."rewindMarker.png")
+local fsSampleRed     = gfx.loadimg(21, baseDir.."fsSampleRed.png")
 
 local u = 512
 
@@ -202,11 +203,15 @@ return {
     FS_CROSS_B_MARKER_MIDDLE = ImageData(fsCrossBlue , 0*u,   32, 1*u, u-64),
     FS_CROSS_B_MARKER_START  = ImageData(fsCrossBlue , 0*u, u-32, 1*u, 32),
 
-
     --markers
     BEAT_LEFT    = ImageData(beatMarker,   0 , 0, 64, 64),
     BEAT_RIGHT   = ImageData(beatMarker,   64, 0, 64, 64),
     REWIND_LEFT  = ImageData(rewindMarker, 0 , 0, 64, 64),
     REWIND_RIGHT = ImageData(rewindMarker, 64, 0, 64, 64),
+
+    --freestyle samples
+    FS_SAMPLE_END    = ImageData(fsSampleRed, 0*u, 0*u, u, u/2),
+    FS_SAMPLE_MIDDLE = ImageData(fsSampleRed, 0*u, 1*u, u, u),
+    FS_SAMPLE_START  = ImageData(fsSampleRed, 0*u, 2.5*u, u, u/2)
 }
 

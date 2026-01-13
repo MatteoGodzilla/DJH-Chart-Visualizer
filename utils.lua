@@ -102,42 +102,54 @@ function isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ)
     return noteStartPPQ < endPPQ and startPPQ <= noteEndPPQ
 end
 
---CrossfadeEvent, [FSCrossfadeEvent]
+--CrossfadeEvent, [FSCrossfadeEvent], EventType
 --returns [CrossfadeEvent]
-function maskCrossfadeWithFSCross(crossfade, freestyle)
+function maskCrossfade(crossfade, freestyle, type)
     local bag = {}
     local bag2 = {}
     table.insert(bag, crossfade)
     for i, fs in ipairs(freestyle) do
-        --cut the intervals using fs
-        for j, cross in ipairs(bag) do
-            --reduce end
-            local cut = false
-            if cross.startPPQ <= fs.startPPQ and fs.startPPQ < cross.endPPQ then
-                table.insert(bag2, CrossfadeEvent(cross.startPPQ, fs.startPPQ, cross.position))
-                cut = true
+        if fs.type == type then
+            --cut the intervals using fs
+            for j, cross in ipairs(bag) do
+                --reduce end
+                local cut = false
+                if cross.startPPQ <= fs.startPPQ and fs.startPPQ <= cross.endPPQ then
+                    table.insert(bag2, CrossfadeEvent(cross.startPPQ, fs.startPPQ, cross.position))
+                    cut = true
+                end
+                if cross.startPPQ <= fs.endPPQ and fs.endPPQ <= cross.endPPQ then
+                    table.insert(bag2, CrossfadeEvent(fs.endPPQ, cross.endPPQ, cross.position))
+                    cut = true
+                end
+                if fs.startPPQ <= cross.startPPQ and cross.endPPQ <= fs.endPPQ then
+                    --freestyle completely contains crossfade
+                    cut = true
+                end
+                if not cut then
+                    table.insert(bag2, cross)
+                end
             end
-            if cross.startPPQ <= fs.endPPQ and fs.endPPQ < cross.endPPQ then
-                table.insert(bag2, CrossfadeEvent(fs.endPPQ, cross.endPPQ, cross.position))
-                cut = true
+            --move from bag2 to bag
+            bag = {}
+            for _, item in ipairs(bag2) do
+                if item.startPPQ < item.endPPQ then
+                    table.insert(bag, item)
+                end
             end
-            if fs.startPPQ <= cross.startPPQ and cross.endPPQ < fs.endPPQ then
-                --freestyle completely contains crossfade
-                cut = true
-            end
-            if not cut then
-                table.insert(bag2, cross)
-            end
+            bag2 = {}
         end
-        --move from bag2 to bag
-        bag = {}
-        for _, item in ipairs(bag2) do
-            table.insert(bag, item)
-        end
-        bag2 = {}
     end
     table.sort(bag, PPQComparator) 
     return bag
+end
+
+function maskCrossfadeWithFSCross(crossfade, freestyle)
+    return maskCrossfade(crossfade, freestyle, EventType.FS_CROSS)
+end
+
+function maskCrossfadeWithFSSamples(crossfade, freestyle)
+    return maskCrossfade(crossfade, freestyle, EventType.FS_SAMPLE_SCRATCH)
 end
 
 --NOTE: this does not use any reaper functions (because apparently they don't exist?)

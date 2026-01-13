@@ -7,7 +7,7 @@ local function drawCrossfadeGeneral(before, after, Y)
     --the crossfade is drawn as a rectangle where center lies at height Y and total height is 2*TRANSITION
     --In all cases the center lane has the same exact image: LANE_R_ACTIVE
 
-    drawImg(IMAGES.LANE_R_ACTIVE, ORIGIN_X - UNIT/2, Y - TRANSITION, UNIT, 2 * TRANSITION)
+    --drawImg(IMAGES.LANE_R_ACTIVE, ORIGIN_X - UNIT/2, Y - TRANSITION, UNIT, 2 * TRANSITION)
 
     --TODO: handle effects
     if before == CrossfadePos.GREEN then
@@ -57,49 +57,23 @@ local function drawCrossfadeGeneral(before, after, Y)
     end
 end
 
-local function drawLaneRed(startY, endY)
-    drawImg(IMAGES.LANE_R_ACTIVE, ORIGIN_X - UNIT / 2, endY, UNIT, startY - endY)
+local function drawLaneRed(startPPQ, endPPQ, crossfade, freestyle)
+    local sections = maskCrossfadeWithFSSamples(crossfade, freestyle)
+    for i, section in ipairs(sections) do
+        local sectionStartP = math.max(0, getPercentage(section.startPPQ, startPPQ, endPPQ))
+        local sectionEndP = getPercentage(section.endPPQ, startPPQ, endPPQ)
+
+        if sectionEndP > 0 then
+            local sectionStartY = ORIGIN_Y + sectionStartP * (-ORIGIN_Y)
+            local sectionEndY = ORIGIN_Y + sectionEndP * (-ORIGIN_Y)
+           
+            drawImg(IMAGES.LANE_R_ACTIVE, ORIGIN_X - UNIT / 2, sectionEndY, UNIT, sectionStartY - sectionEndY)
+        end
+    end
 end
 
--- CrossfadePos, number, number
-local function drawLaneGreenBlue(position, startY, endY)
-    --default to center position
-    local greenXOff = -UNIT
-    local blueXOff = UNIT
-    local greenImg = IMAGES.LANE_G_ACTIVE
-    local blueImg = IMAGES.LANE_B_ACTIVE
-
-    --TODO: handle when effects are available
-
-    if position == CrossfadePos.GREEN then
-        greenXOff = -2*UNIT
-        blueImg = IMAGES.LANE_B_INACTIVE
-    elseif position == CrossfadePos.BLUE then
-        blueXOff = 2*UNIT
-        greenImg = IMAGES.LANE_G_INACTIVE
-    end
-    drawImg(greenImg, ORIGIN_X + greenXOff -UNIT / 2, endY, UNIT, startY - endY)
-    drawImg(blueImg, ORIGIN_X + blueXOff -UNIT / 2, endY, UNIT, startY - endY)
-end
-
---number, number, CrossfadeEvent | CFSpikeEvent | nil, CrossfadeEvent, [FSCrossfadeEvent]
-local function drawCrossfadeEvent(startPPQ, endPPQ, lastEvent, crossfade, freestyle)
-    local startP = math.max(0,(crossfade.startPPQ - startPPQ) / (endPPQ - startPPQ))
-    local endP = (crossfade.endPPQ - startPPQ) / (endPPQ - startPPQ)
-
-    local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
-    local endY = ORIGIN_Y + endP * (-ORIGIN_Y)
-    endY = endY + TRANSITION -- always allocate space for the next event
-
-    local pushStart = false
-
-    if lastEvent ~= nil and lastEvent.position ~= crossfade.position then
-        --draw transition image aka crossfade itself
-        drawCrossfadeGeneral(lastEvent.position, crossfade.position, startY)
-        startY = startY - TRANSITION
-        pushStart = true
-    end
-
+-- CrossfadeEvent, [FSCrossfadeEvent] 
+local function drawLaneGreenBlue(startPPQ, endPPQ, crossfade, freestyle)
     local sections = maskCrossfadeWithFSCross(crossfade, freestyle)
     for i, section in ipairs(sections) do
         local sectionStartP = math.max(0, getPercentage(section.startPPQ, startPPQ, endPPQ))
@@ -109,10 +83,40 @@ local function drawCrossfadeEvent(startPPQ, endPPQ, lastEvent, crossfade, freest
             local sectionStartY = ORIGIN_Y + sectionStartP * (-ORIGIN_Y)
             local sectionEndY = ORIGIN_Y + sectionEndP * (-ORIGIN_Y)
            
-            drawLaneGreenBlue(section.position, sectionStartY, sectionEndY)
+            --default to center position
+            local greenXOff = -UNIT
+            local blueXOff = UNIT
+            local greenImg = IMAGES.LANE_G_ACTIVE
+            local blueImg = IMAGES.LANE_B_ACTIVE
+
+            --TODO: handle when effects are available
+
+            if crossfade.position == CrossfadePos.GREEN then
+                greenXOff = -2*UNIT
+                blueImg = IMAGES.LANE_B_INACTIVE
+            elseif crossfade.position == CrossfadePos.BLUE then
+                blueXOff = 2*UNIT
+                greenImg = IMAGES.LANE_G_INACTIVE
+            end
+            drawImg(greenImg, ORIGIN_X + greenXOff -UNIT / 2, sectionEndY, UNIT, sectionStartY - sectionEndY)
+            drawImg(blueImg, ORIGIN_X + blueXOff -UNIT / 2, sectionEndY, UNIT, sectionStartY - sectionEndY)
         end
     end
-    drawLaneRed(startY, endY)
+end
+
+--number, number, CrossfadeEvent | CFSpikeEvent | nil, CrossfadeEvent, [FSCrossfadeEvent]
+local function drawCrossfadeEvent(startPPQ, endPPQ, lastEvent, crossfade, freestyle)
+    local startP = math.max(0,(crossfade.startPPQ - startPPQ) / (endPPQ - startPPQ))
+
+    local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
+
+    drawLaneGreenBlue(startPPQ, endPPQ, crossfade, freestyle)
+    drawLaneRed(startPPQ, endPPQ, crossfade, freestyle)
+
+    if lastEvent ~= nil and lastEvent.position ~= crossfade.position then
+        --draw transition image aka crossfade itself
+        drawCrossfadeGeneral(lastEvent.position, crossfade.position, startY)
+    end
 end
 
 local function getSpikeActiveState(events, spike)
@@ -147,7 +151,7 @@ local function getSpikeActiveState(events, spike)
 end
 
 --number, number, CrossfadeEvent | CFSpikeEvent | nil, CFSpikeEvent, bool, bool
-local function drawSpike(startPPQ, endPPQ, lastEvent, spike, activeFront, activeBack)
+local function drawSpike(startPPQ, endPPQ, lastEvent, spike, activeFront, activeBack, freestyle)
     local startP = (spike.startPPQ - startPPQ) / (endPPQ - startPPQ)
     local endP = (spike.endPPQ - startPPQ) / (endPPQ - startPPQ)
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
@@ -165,8 +169,8 @@ local function drawSpike(startPPQ, endPPQ, lastEvent, spike, activeFront, active
         laneStartY = startY - TRANSITION
     end
 
-    drawLaneGreenBlue(spike.position, laneStartY, endY)
-    drawLaneRed(laneStartY, endY)
+    drawLaneGreenBlue(startPPQ, endPPQ, spike, freestyle)
+    drawLaneRed(startPPQ, endPPQ, spike, freestyle)
 
     --TODO: test spikes from a side to the opposite one
 
@@ -261,7 +265,7 @@ function drawCrossfades(startPPQ, endPPQ, mergedCross, freestyle)
             drawCrossfadeEvent(startPPQ, endPPQ, lastEvent, event, freestyle)
         elseif event.type == EventType.SPIKE then
             local front,back = getSpikeActiveState(mergedCross, event)
-            drawSpike(startPPQ, endPPQ, lastEvent, event, front, back)
+            drawSpike(startPPQ, endPPQ, lastEvent, event, front, back, freestyle)
         end
         lastEvent = event
     end

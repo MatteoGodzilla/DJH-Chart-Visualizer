@@ -12,12 +12,15 @@ require("renderer/drawEffects")
 require("renderer/drawSections")
 require("renderer/drawFSCrossfade")
 require("renderer/drawBeatIndicators")
+require("renderer/drawFSSampleScratches")
 
 --Other globals
 local notesTracks = {}
 local effectsTracks = {}
 local chosenNotesTrackIndex = 0
 local chosenEffectsTrackIndex = 0
+
+local freestyleSampleToLane = {}
 
 --number of beats visible
 local pixelsPerBeat = 2*UNIT
@@ -39,7 +42,7 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
             effects = {},
             sections = {},
             freestyle = {},
-            fsCrossfadeMarkers = {}
+            fsCrossfadeMarkers = {},
         }
         local midiTake = reaper.GetMediaItemTake(reaper.GetTrackMediaItem(track, 0), 0)
         if reaper.TakeIsMIDI(midiTake) then
@@ -190,10 +193,14 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                     end
                 end
 
-                --check for freestyle events
+                --check for freestyle crossfade 
                 if notePitch == NOTES2MIDI.FS_CROSS_ZONE then
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
                         table.insert(result.freestyle, FSCrossfadeEvent(noteStartPPQ, noteEndPPQ))
+                    end
+                elseif notePitch == NOTES2MIDI.FS_SAMPLES_SCRATCHES then
+                    if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
+                        table.insert(result.freestyle, FSSampleEvent(noteStartPPQ, noteEndPPQ, noteVelocity))
                     end
                 end
 
@@ -207,6 +214,9 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                         table.insert(result.fsCrossfadeMarkers, FSCrossMarkerEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.BLUE))
                     end
                 end
+
+                --check for freestyle sample/scratch
+                --unfortunately, the lane is not stored on the midi, but it is related to the velocity 
             end
 
             --get sections
@@ -277,7 +287,7 @@ local function update()
         local deltaTime = thisFrame - lastFrame
         glog(string.format("%f FPS", 1 / deltaTime))
         local measure, beat = PPQToMeasureBeats(startPPQ, PPQresolution)
-        glog(string.format("Time: %d.%d", measure, beat))
+        glog(string.format("Time: %d.%d (%s)", measure, beat, startPPQ))
         local _, trackName = reaper.GetTrackName(notes)
         glog(string.format("Track %d of %d:%s", chosenNotesTrackIndex, #notesTracks, trackName))
 
@@ -293,11 +303,12 @@ local function update()
             drawZones(startPPQ, mergedCross)
             drawFSCrossfades(startPPQ, endPPQ, notesInFrame.freestyle)
             drawCrossfades(startPPQ, endPPQ, mergedCross, notesInFrame.freestyle)
-            drawScratchZones(startPPQ, endPPQ, notesInFrame.scratchZones, mergedCross)
-            drawTaps(startPPQ, endPPQ, PPQresolution, notesInFrame.taps, mergedCross)
-            drawScratches(startPPQ, endPPQ, PPQresolution, notesInFrame.scratches, mergedCross)
+            --drawScratchZones(startPPQ, endPPQ, notesInFrame.scratchZones, mergedCross)
+            --drawTaps(startPPQ, endPPQ, PPQresolution, notesInFrame.taps, mergedCross)
+            --drawScratches(startPPQ, endPPQ, PPQresolution, notesInFrame.scratches, mergedCross)
             drawEffectsHandle(startPPQ, endPPQ, notesInFrame.effects)
             drawFSCrossfadeMarkers(startPPQ, endPPQ, notesInFrame.fsCrossfadeMarkers)
+            drawFSSampleScratches(startPPQ, endPPQ, notesInFrame.freestyle, freestyleSampleToLane)
 
             drawSections(startPPQ, endPPQ, notesInFrame.sections)
         end
@@ -316,11 +327,52 @@ local function update()
     end
 end
 
+local function parseSampleMap(file)
+    local result = {}
+
+    local line = file:read("*line")
+    while line ~= nil do
+        startI, endI, data = string.find(line,"green%s*=([%s%d]*)")
+        if startI ~= nil then
+            --we have a match
+            for vel in string.gmatch(data, "%d*") do
+                if #vel > 0 then
+                    result[vel] = CrossfadePos.GREEN
+                end
+            end
+        end
+        startI, endI, data = string.find(line,"blue%s*=([%s%d]*)")
+        if startI ~= nil then
+            --we have a match
+            for vel in string.gmatch(data, "%d*") do
+                if #vel > 0 then
+                    result[vel] = CrossfadePos.BLUE
+                end
+            end
+        end
+        line = file:read("*line")
+    end
+    return result
+end
+
 local function main()
     local WIDTH = 800
     local HEIGHT = 600
     gfx.init("DJH-Chart-Visualizer", WIDTH, HEIGHT)
     gfx.setfont(1, "Arial", 20)
+
+    local sampleMap = reaper.GetProjectPath().."/sampleMap.txt"
+
+    local file = io.open(sampleMap, "r") 
+    if file ~= nil then
+        freestyleSampleToLane = parseSampleMap(file)
+    end
+  
+    --[[
+    for k, v in pairs(freestyleSampleToLane) do
+        reaper.ShowMessageBox(string.format("%s -> %d", k, v), "", 0)
+    end
+    ]]
 
     notesTracks, effectsTracks = getDJHTracks()
     chosenNotesTrackIndex = 1

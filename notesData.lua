@@ -15,7 +15,8 @@ EventType = {
     EFFECTS = 7,
     SECTION = 8,
     FS_CROSS = 9,
-    FS_CROSS_MARKER = 10
+    FS_CROSS_MARKER = 10,
+    FS_SAMPLE_SCRATCH = 11
 }
 
 EffectMask = {
@@ -44,6 +45,7 @@ ScratchDir = {
 --| EffectEvent
 --| SectionEvent
 --| FSCrossfadeEvent
+--| FSSampleEvent
 
 local function Event(eventType, startTime, endTime)
     return {
@@ -106,4 +108,10 @@ end
 
 function FSCrossMarkerEvent(startTime, endTime, pos)
     return EventWithPos(EventType.FS_CROSS_MARKER, startTime, endTime, pos)
+end
+
+function FSSampleEvent(startTime, endTime, velocity)
+    local res = Event(EventType.FS_SAMPLE_SCRATCH, startTime, endTime)
+    res.velocity = velocity
+    return res
 end
