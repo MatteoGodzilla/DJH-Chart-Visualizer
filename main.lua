@@ -1,3 +1,8 @@
+local _, filename = reaper.get_action_context()
+local rootFolder = filename:match("(.*[/\\])")
+--add root folder to path so that lua can resolve the modules correctly
+package.path = package.path .. ";" .. rootFolder .. "?.lua"
+
 --Imported functions and variables
 require("utils")
 local NOTES2MIDI = require("notesToMidi")
