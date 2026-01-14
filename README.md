@@ -13,3 +13,8 @@ Instructions updated as of Reaper v7.47
 
 Once you have opened the visualizer once, you can also open it with `Actions` -> `Show action list...` -> `ReaScript: Run last ReaScript (EEL2 or Lua)`, skipping a step.
 
+## Shortcuts
+- `Minus Key`: Reduce zoom
+- `Equals Key`: Increase zoom 
+- `Left Arrow`: Switch to previous track (if multiple are present)
+- `Right Arrow`: Switch to next track (if multiple are present)
