@@ -1,4 +1,6 @@
 --Consider as an enum type
+--TODO: split this between Lane {GREEN, RED, BLUE} and CrossfadePos {LEFT, CENTER, RIGHT}
+--it's getting confusing to use CrossfadePos for both
 CrossfadePos = {
     GREEN = 0,
     RED = 1,
@@ -16,7 +18,8 @@ EventType = {
     SECTION = 8,
     FS_CROSS = 9,
     FS_CROSS_MARKER = 10,
-    FS_SAMPLE_SCRATCH = 11
+    FS_SAMPLE = 11,
+    FS_SCRATCH = 12
 }
 
 EffectMask = {
@@ -56,7 +59,7 @@ local function Event(eventType, startTime, endTime)
 end
 
 --Pos is one of the available values in CrossfadePos
-local function EventWithPos(eventType, startTime, endTime, pos)
+function EventWithPos(eventType, startTime, endTime, pos)
     local res = Event(eventType, startTime, endTime)
     res.position = pos
     return res
@@ -110,8 +113,10 @@ function FSCrossMarkerEvent(startTime, endTime, pos)
     return EventWithPos(EventType.FS_CROSS_MARKER, startTime, endTime, pos)
 end
 
-function FSSampleEvent(startTime, endTime, velocity)
-    local res = Event(EventType.FS_SAMPLE_SCRATCH, startTime, endTime)
-    res.velocity = velocity
-    return res
+function FSSampleEvent(startTime, endTime)
+    return Event(EventType.FS_SAMPLE, startTime, endTime)
+end
+
+function FSScratchEvent(startTime, endTime, pos)
+    return EventWithPos(EventType.FS_SCRATCH, startTime, endTime, pos)
 end

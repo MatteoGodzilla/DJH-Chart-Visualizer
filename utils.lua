@@ -59,7 +59,7 @@ function getPPQTimes(track, pixelsPerBeat, availableHeight)
     end
 end
 
---number, [CrossfadeEvent | CFSpikeEvent]
+--number, [CrossfadeEvent]
 function getCrossfadePosAt(ppq, mergedCross)
     for _,cross in ipairs(mergedCross) do
         if cross.startPPQ <= ppq and ppq < cross.endPPQ then
@@ -162,4 +162,12 @@ function PPQToMeasureBeats(timePPQ, PPQResolution)
     local beatsRaw = measureRaw - measure
     local beat = math.floor(1 + beatsRaw * 4)
     return measure, beat
+end
+
+function createGroup(event)
+    return {
+        startPPQ = event.startPPQ,
+        endPPQ = event.endPPQ,
+        events = {}
+    }
 end

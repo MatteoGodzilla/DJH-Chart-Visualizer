@@ -143,7 +143,6 @@ end
 --number, number, number, [ScratchEvent], [CrossfadeEvent | CFSpikeEvent]
 function drawScratches(startPPQ, endPPQ, PPQResolution, scratches, mergedCross)
     for _, scratch in ipairs(scratches) do
-        --glog(string.format("Scratch: %d %d", scratch.position, scratch.direction))
         local cfPos = getCrossfadePosAt(scratch.startPPQ, mergedCross)
         if scratch.endPPQ - scratch.startPPQ <= PPQResolution / 4 then
             drawSingleScratch(startPPQ, endPPQ, scratch, cfPos)

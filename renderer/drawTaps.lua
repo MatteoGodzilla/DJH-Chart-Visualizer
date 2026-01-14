@@ -67,7 +67,7 @@ local function drawTapTrailFill(startPPQ, endPPQ, tap, cross)
     end
 end
 
---number, number, TapEvent, [CrossfadeEvent|CFSpikeEvent]
+--number, number, TapEvent, [CrossfadeEvent]
 local function drawTapTrail(startPPQ, endPPQ, tap, mergedCross)
     local regions = getCrossfadeRegionsInEvent(tap, mergedCross)
 

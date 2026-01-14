@@ -31,6 +31,8 @@ local fsCrossBlue     = gfx.loadimg(18, baseDir.."fsCrossfadeBlue.png")
 local beatMarker      = gfx.loadimg(19, baseDir.."beatMarker.png")
 local rewindMarker    = gfx.loadimg(20, baseDir.."rewindMarker.png")
 local fsSampleRed     = gfx.loadimg(21, baseDir.."fsSampleRed.png")
+local fsScratchGreen  = gfx.loadimg(22, baseDir.."fsScratchGreen.png")
+local fsScratchBlue   = gfx.loadimg(23, baseDir.."fsScratchBlue.png")
 
 local u = 512
 
@@ -212,6 +214,19 @@ return {
     --freestyle samples
     FS_SAMPLE_END    = ImageData(fsSampleRed, 0*u, 0*u, u, u/2),
     FS_SAMPLE_MIDDLE = ImageData(fsSampleRed, 0*u, 1*u, u, u),
-    FS_SAMPLE_START  = ImageData(fsSampleRed, 0*u, 2.5*u, u, u/2)
+    FS_SAMPLE_START  = ImageData(fsSampleRed, 0*u, 2.5*u, u, u/2),
+
+    --freestyle scratches
+    FS_SCRATCH_G_END      = ImageData(fsScratchGreen, 0*u,   0*u, 1*u, 0.5*u),
+    FS_SCRATCH_G_MIDDLE   = ImageData(fsScratchGreen, 1*u,   0*u, 1*u,   1*u),
+    FS_SCRATCH_G_START    = ImageData(fsScratchGreen, 0*u, 0.5*u, 1*u, 0.5*u),
+    FS_SCRATCH_G_TO_LEFT  = ImageData(fsScratchGreen, 2*u,   0*u, 2*u,   1*u),
+    FS_SCRATCH_G_TO_RIGHT = ImageData(fsScratchGreen, 4*u,   0*u, 2*u,   1*u),
+
+    FS_SCRATCH_B_END      = ImageData(fsScratchBlue, 0*u,   0*u, 1*u, 0.5*u),
+    FS_SCRATCH_B_MIDDLE   = ImageData(fsScratchBlue, 1*u,   0*u, 1*u,   1*u),
+    FS_SCRATCH_B_START    = ImageData(fsScratchBlue, 0*u, 0.5*u, 1*u, 0.5*u),
+    FS_SCRATCH_B_TO_LEFT  = ImageData(fsScratchBlue, 2*u,   0*u, 2*u,   1*u),
+    FS_SCRATCH_B_TO_RIGHT = ImageData(fsScratchBlue, 4*u,   0*u, 2*u,   1*u),
 }
 

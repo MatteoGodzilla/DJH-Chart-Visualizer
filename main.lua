@@ -12,7 +12,8 @@ require("renderer/drawEffects")
 require("renderer/drawSections")
 require("renderer/drawFSCrossfade")
 require("renderer/drawBeatIndicators")
-require("renderer/drawFSSampleScratches")
+require("renderer/drawFSSamples")
+require("renderer/drawFSScratches")
 
 --Other globals
 local notesTracks = {}
@@ -200,7 +201,14 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                     end
                 elseif notePitch == NOTES2MIDI.FS_SAMPLES_SCRATCHES then
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
-                        table.insert(result.freestyle, FSSampleEvent(noteStartPPQ, noteEndPPQ, noteVelocity))
+                        local lane = freestyleSampleToLane[noteVelocity]
+                        if lane == CrossfadePos.GREEN then
+                            table.insert(result.freestyle, FSScratchEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.GREEN))
+                        elseif lane == CrossfadePos.BLUE then
+                            table.insert(result.freestyle, FSScratchEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.BLUE))
+                        else 
+                            table.insert(result.freestyle, FSSampleEvent(noteStartPPQ, noteEndPPQ))
+                        end
                     end
                 end
 
@@ -296,6 +304,7 @@ local function update()
             glog("ERROR: Could not find compatible midi take")
         else
             local mergedCross = mergeCrossfadeEvents(notesInFrame.crossfades, notesInFrame.spikes)
+
             --draw stuff
             drawBeatIndicators(startPPQ, endPPQ, PPQresolution)
             drawEuphoriaZones(startPPQ, endPPQ, notesInFrame.euphoria)
@@ -308,7 +317,8 @@ local function update()
             drawScratches(startPPQ, endPPQ, PPQresolution, notesInFrame.scratches, mergedCross)
             drawEffectsHandle(startPPQ, endPPQ, notesInFrame.effects)
             drawFSCrossfadeMarkers(startPPQ, endPPQ, notesInFrame.fsCrossfadeMarkers)
-            drawFSSampleScratches(startPPQ, endPPQ, notesInFrame.freestyle, freestyleSampleToLane)
+            drawFSSamples(startPPQ, endPPQ, notesInFrame.freestyle)
+            drawFSScratches(startPPQ, endPPQ, notesInFrame.freestyle, mergedCross)
 
             drawSections(startPPQ, endPPQ, notesInFrame.sections)
         end
@@ -337,7 +347,7 @@ local function parseSampleMap(file)
             --we have a match
             for vel in string.gmatch(data, "%d*") do
                 if #vel > 0 then
-                    result[vel] = CrossfadePos.GREEN
+                    result[tonumber(vel)] = CrossfadePos.GREEN
                 end
             end
         end
@@ -346,7 +356,7 @@ local function parseSampleMap(file)
             --we have a match
             for vel in string.gmatch(data, "%d*") do
                 if #vel > 0 then
-                    result[vel] = CrossfadePos.BLUE
+                    result[tonumber(vel)] = CrossfadePos.BLUE
                 end
             end
         end
@@ -367,7 +377,7 @@ local function main()
     if file ~= nil then
         freestyleSampleToLane = parseSampleMap(file)
     end
-  
+ 
     --[[
     for k, v in pairs(freestyleSampleToLane) do
         reaper.ShowMessageBox(string.format("%s -> %d", k, v), "", 0)
