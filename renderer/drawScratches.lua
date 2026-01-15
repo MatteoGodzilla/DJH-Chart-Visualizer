@@ -3,7 +3,7 @@ local IMAGES = require("images")
 
 --number, number, ScratchEvent, CrossfadeEvent
 local function drawScratchTrailEnd(startPPQ, endPPQ, scratch, lastEvent)
-    local endP = (lastEvent.endPPQ - startPPQ) / (endPPQ - startPPQ)
+    local endP = getPercentage(lastEvent.endPPQ,startPPQ, endPPQ)
     local endY = ORIGIN_Y + endP * (-ORIGIN_Y)
     local xOffset = 0
 
@@ -25,7 +25,7 @@ end
 
 --number, number, ScratchEvent, CrossfadeEvent, CrossfadeEvent
 local function drawScratchTrailTransition(startPPQ, endPPQ, scratch, lastEvent, cross)
-    local startP = (cross.startPPQ - startPPQ) / (endPPQ - startPPQ)
+    local startP = getPercentage(cross.startPPQ,startPPQ, endPPQ)
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
 
     if scratch.position == CrossfadePos.GREEN then
@@ -47,8 +47,8 @@ end
 
 --number, number, ScratchEvent, CrossfadeEvent, boolean
 local function drawScratchTrailFill(startPPQ, endPPQ, scratch, cross, needsAdjusting)
-    local startP = math.max(0,(cross.startPPQ - startPPQ) / (endPPQ - startPPQ))
-    local endP = (cross.endPPQ - startPPQ) / (endPPQ - startPPQ)
+    local startP = math.max(0, getPercentage(cross.startPPQ,startPPQ, endPPQ))
+    local endP = getPercentage(cross.endPPQ,startPPQ, endPPQ)
 
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
     local endY = ORIGIN_Y + endP * (-ORIGIN_Y)
@@ -102,7 +102,7 @@ end
 
 --number, number, ScratchEvent, CrossfadePos
 local function drawSingleScratch(startPPQ, endPPQ, scratch, cfPos)
-    local startP = math.max(0,(scratch.startPPQ - startPPQ) / (endPPQ - startPPQ))
+    local startP = math.max(0, getPercentage(scratch.startPPQ,startPPQ, endPPQ))
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
 
     if scratch.position == CrossfadePos.GREEN then

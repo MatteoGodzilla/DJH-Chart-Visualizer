@@ -1,6 +1,6 @@
 local function drawSingleZoneSegment(startPPQ, endPPQ, zoneSegment, cfPos)
-    local startP = math.max(0,(zoneSegment.startPPQ - startPPQ) / (endPPQ - startPPQ))
-    local endP = (zoneSegment.endPPQ - startPPQ) / (endPPQ - startPPQ)
+    local startP = math.max(0, getPercentage(zoneSegment.startPPQ,startPPQ, endPPQ))
+    local endP = getPercentage(zoneSegment.endPPQ,startPPQ, endPPQ)
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
     local endY = ORIGIN_Y + endP * (-ORIGIN_Y)
     local alpha = 0.66

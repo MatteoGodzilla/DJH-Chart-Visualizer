@@ -106,7 +106,7 @@ end
 
 --number, number, CrossfadeEvent | CFSpikeEvent | nil, CrossfadeEvent, [FSCrossfadeEvent]
 local function drawCrossfadeEvent(startPPQ, endPPQ, lastEvent, crossfade, freestyle)
-    local startP = math.max(0,(crossfade.startPPQ - startPPQ) / (endPPQ - startPPQ))
+    local startP = math.max(0, getPercentage(crossfade.startPPQ, startPPQ, endPPQ))
 
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
 
@@ -152,8 +152,8 @@ end
 
 --number, number, CrossfadeEvent | CFSpikeEvent | nil, CFSpikeEvent, bool, bool
 local function drawSpike(startPPQ, endPPQ, lastEvent, spike, activeFront, activeBack, freestyle)
-    local startP = (spike.startPPQ - startPPQ) / (endPPQ - startPPQ)
-    local endP = (spike.endPPQ - startPPQ) / (endPPQ - startPPQ)
+    local startP = getPercentage(spike.startPPQ,startPPQ, endPPQ)
+    local endP = getPercentage(spike.endPPQ,startPPQ, endPPQ)
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
     local endY = ORIGIN_Y + endP * (-ORIGIN_Y)
 

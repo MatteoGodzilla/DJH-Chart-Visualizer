@@ -1,7 +1,7 @@
 local IMAGES = require("images")
 
 local function drawTapTrailEnd(startPPQ, endPPQ, tap, lastEvent)
-    local endP = (lastEvent.endPPQ - startPPQ) / (endPPQ - startPPQ)
+    local endP = getPercentage(lastEvent.endPPQ,startPPQ, endPPQ)
     local endY = ORIGIN_Y + endP * (-ORIGIN_Y)
 
     if tap.position == CrossfadePos.GREEN then
@@ -22,7 +22,7 @@ local function drawTapTrailEnd(startPPQ, endPPQ, tap, lastEvent)
 end
 
 local function drawTapTrailTransition(startPPQ, endPPQ, tap, lastEvent, cross)
-    local startP = (cross.startPPQ - startPPQ) / (endPPQ - startPPQ)
+    local startP = getPercentage(cross.startPPQ,startPPQ, endPPQ)
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
 
     if tap.position == CrossfadePos.GREEN then
@@ -44,8 +44,8 @@ end
 
 --number, number, TapEvent, CrossfadeEvent
 local function drawTapTrailFill(startPPQ, endPPQ, tap, cross)
-    local startP = math.max(0,(cross.startPPQ - startPPQ) / (endPPQ - startPPQ))
-    local endP = (cross.endPPQ - startPPQ) / (endPPQ - startPPQ)
+    local startP = math.max(0, getPercentage(cross.startPPQ,startPPQ, endPPQ))
+    local endP = getPercentage(cross.endPPQ,startPPQ, endPPQ)
 
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
     local endY = ORIGIN_Y + endP * (-ORIGIN_Y)
@@ -86,7 +86,7 @@ end
 
 --number, number, TapEvent, CrossfadePos
 local function drawSingleTap(startPPQ, endPPQ, tap, cfPos)
-    local startP = math.max(0,(tap.startPPQ - startPPQ) / (endPPQ - startPPQ))
+    local startP = math.max(0, getPercentage(tap.startPPQ,startPPQ, endPPQ))
     --TODO: figure out a better solution for held taps
     if startP < 0 then
         return

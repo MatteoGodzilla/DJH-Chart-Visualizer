@@ -1,8 +1,8 @@
 local IMAGES = require("images")
 --number, number, EffectsEvent
 local function drawEffectZone(startPPQ, endPPQ, effect)
-    local startP = math.max(0,(effect.startPPQ - startPPQ) / (endPPQ - startPPQ))
-    local endP = (effect.endPPQ - startPPQ) / (endPPQ - startPPQ)
+    local startP = math.max(getPercentage(effect.startPPQ,startPPQ, endPPQ))
+    local endP = getPercentage(effect.endPPQ,startPPQ, endPPQ)
 
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
     local endY = ORIGIN_Y + endP * (-ORIGIN_Y)
@@ -22,7 +22,7 @@ end
 
 --number, number, EffectEvent
 local function drawHandle(startPPQ, endPPQ, effect)
-    local startP = math.max(0,(effect.startPPQ - startPPQ) / (endPPQ - startPPQ))
+    local startP = math.max(0, getPercentage(effect.startPPQ,startPPQ, endPPQ))
 
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
     gfx.set(0,0,1,1) 
