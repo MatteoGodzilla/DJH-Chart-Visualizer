@@ -97,7 +97,7 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                 elseif notePitch == NOTES2MIDI.SPIKE_R then
                     crossfadeHistory[3] = crossfadeHistory[2]
                     crossfadeHistory[2] = crossfadeHistory[1]
-                    crossfadeHistory[1] = CFSpikeEvent(noteStartPPQ, noteEndPPQ, crossfadeHistory[2].position, CrossfadePos.GREEN)
+                    crossfadeHistory[1] = CFSpikeEvent(noteStartPPQ, noteEndPPQ, crossfadeHistory[2].position, CrossfadePos.RED)
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
                         table.insert(result.spikes, crossfadeHistory[1])
                     end

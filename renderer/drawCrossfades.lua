@@ -172,22 +172,21 @@ local function drawSpike(startPPQ, endPPQ, lastEvent, spike, activeFront, active
     drawLaneGreenBlue(startPPQ, endPPQ, spike, freestyle)
     drawLaneRed(startPPQ, endPPQ, spike, freestyle)
 
-    --TODO: test spikes from a side to the opposite one
-
     if spike.position == CrossfadePos.GREEN then
-        -- spike from green to red
-        local frontImage = IMAGES.SPIKE_G_FRONT_RIGHT_INACTIVE
-        if activeFront then
-            frontImage = IMAGES.SPIKE_G_FRONT_RIGHT_ACTIVE
+        if spike.tipPosition ~= CrossfadePos.GREEN then
+            -- spike from green to red
+            local frontImage = IMAGES.SPIKE_G_FRONT_RIGHT_INACTIVE
+            if activeFront then
+                frontImage = IMAGES.SPIKE_G_FRONT_RIGHT_ACTIVE
+            end
+            local backImage = IMAGES.SPIKE_G_BACK_RIGHT_INACTIVE
+            if activeBack then
+                backImage = IMAGES.SPIKE_G_BACK_RIGHT_ACTIVE
+            end
+            drawImg(frontImage, ORIGIN_X - 2*UNIT - UNIT / 2, startY , 2 * UNIT, TRANSITION)
+            drawImg(backImage, ORIGIN_X - 2*UNIT - UNIT / 2, startY - TRANSITION, 2 * UNIT, TRANSITION)
         end
-        local backImage = IMAGES.SPIKE_G_BACK_RIGHT_INACTIVE
-        if activeBack then
-            backImage = IMAGES.SPIKE_G_BACK_RIGHT_ACTIVE
-        end
-        drawImg(frontImage, ORIGIN_X - 2*UNIT - UNIT / 2, startY , 2 * UNIT, TRANSITION)
-        drawImg(backImage, ORIGIN_X - 2*UNIT - UNIT / 2, startY - TRANSITION, 2 * UNIT, TRANSITION)
 
-        --possible spike from red to blue
         if spike.tipPosition == CrossfadePos.BLUE then
             -- spike from red to blue
             local frontImage = IMAGES.SPIKE_B_FRONT_RIGHT_ACTIVE
@@ -228,18 +227,19 @@ local function drawSpike(startPPQ, endPPQ, lastEvent, spike, activeFront, active
             drawImg(backImage, ORIGIN_X + UNIT - UNIT / 2, startY - TRANSITION, 2 * UNIT, TRANSITION)
         end
     elseif spike.position == CrossfadePos.BLUE then
-        -- spike from blue to red
-        local frontImage = IMAGES.SPIKE_B_FRONT_LEFT_INACTIVE
-        if activeFront then
-            frontImage = IMAGES.SPIKE_B_FRONT_LEFT_ACTIVE
+        if spike.tipPosition ~= CrossfadePos.BLUE then
+            -- spike from blue to red
+            local frontImage = IMAGES.SPIKE_B_FRONT_LEFT_INACTIVE
+            if activeFront then
+                frontImage = IMAGES.SPIKE_B_FRONT_LEFT_ACTIVE
+            end
+            local backImage = IMAGES.SPIKE_B_BACK_LEFT_INACTIVE
+            if activeBack then
+                backImage = IMAGES.SPIKE_B_BACK_LEFT_ACTIVE
+            end
+            drawImg(frontImage, ORIGIN_X + UNIT - UNIT / 2, startY, 2 * UNIT, TRANSITION)
+            drawImg(backImage, ORIGIN_X + UNIT - UNIT / 2, startY - TRANSITION, 2 * UNIT, TRANSITION)
         end
-        local backImage = IMAGES.SPIKE_B_BACK_LEFT_INACTIVE
-        if activeBack then
-            backImage = IMAGES.SPIKE_B_BACK_LEFT_ACTIVE
-        end
-        drawImg(frontImage, ORIGIN_X + UNIT - UNIT / 2, startY, 2 * UNIT, TRANSITION)
-        drawImg(backImage, ORIGIN_X + UNIT - UNIT / 2, startY - TRANSITION, 2 * UNIT, TRANSITION)
-
         if spike.tipPosition == CrossfadePos.GREEN then
             -- spike from red to green
             local frontImage = IMAGES.SPIKE_G_FRONT_LEFT_ACTIVE
@@ -264,6 +264,7 @@ function drawCrossfades(startPPQ, endPPQ, mergedCross, freestyle)
         if event.type == EventType.CROSS then
             drawCrossfadeEvent(startPPQ, endPPQ, lastEvent, event, freestyle)
         elseif event.type == EventType.SPIKE then
+            glog(string.format("SPIKE: %d %d", event.position, event.tipPosition))
             local front,back = getSpikeActiveState(mergedCross, event)
             drawSpike(startPPQ, endPPQ, lastEvent, event, front, back, freestyle)
         end
