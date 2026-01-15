@@ -34,3 +34,4 @@ green = 0 1 2
 blue = 4 5 6 7
 ```
 
+Note: this file is loaded when first opening the visualizer, so if the contents change you have to re-open the visualizer

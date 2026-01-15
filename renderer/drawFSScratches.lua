@@ -181,6 +181,27 @@ local function drawFSScratch(startPPQ, endPPQ, group, groupPosition, crossfades)
         lastEvent = region
     end
     drawFSScratchEnd(startPPQ, endPPQ, fakeEvent, lastEvent)
+
+    for _, other in ipairs(group.events) do
+        local markerP = getPercentage(other.startPPQ, startPPQ, endPPQ)
+        local markerY = ORIGIN_Y + markerP * (-ORIGIN_Y)
+        local cfPos = getCrossfadePosAt(other.startPPQ, crossfades)
+        if groupPosition == CrossfadePos.GREEN then
+            gfx.set(0.051, 0.812, 0.102, 1) 
+            local xOffset = -UNIT
+            if cfPos == CrossfadePos.GREEN then
+                xOffset = -2*UNIT
+            end
+            gfx.rect(ORIGIN_X + xOffset - GROUP_FS_WIDTH/2, markerY - GROUP_FS_THICKNESS / 2, GROUP_FS_WIDTH, GROUP_FS_THICKNESS)
+        elseif groupPosition == CrossfadePos.BLUE then
+            gfx.set(0.141, 0.659, 0.929, 1) 
+            local xOffset = UNIT
+            if cfPos == CrossfadePos.BLUE then
+                xOffset = 2*UNIT
+            end
+            gfx.rect(ORIGIN_X + xOffset - GROUP_FS_WIDTH/2, markerY - GROUP_FS_THICKNESS / 2, GROUP_FS_WIDTH, GROUP_FS_THICKNESS)
+        end
+    end
 end
 
 --number, number, [Event], [CrossfadeEvent]

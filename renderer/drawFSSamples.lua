@@ -17,12 +17,10 @@ local function drawFSSample(startPPQ, endPPQ, group)
 
     --draw additional markers for all the notes in group
     gfx.set(0.851, 0.078, 0.078, 1) 
-    local THICKNESS = 4 --pixel
-    local WIDTH = UNIT / 2
     for _, other in ipairs(group.events) do
         local markerP = getPercentage(other.startPPQ, startPPQ, endPPQ)
         local markerY = ORIGIN_Y + markerP * (-ORIGIN_Y)
-        gfx.rect(ORIGIN_X - WIDTH/2, markerY - THICKNESS / 2, WIDTH, THICKNESS)
+        gfx.rect(ORIGIN_X - GROUP_FS_WIDTH/2, markerY - GROUP_FS_THICKNESS / 2, GROUP_FS_WIDTH, GROUP_FS_THICKNESS)
     end
 
 end
