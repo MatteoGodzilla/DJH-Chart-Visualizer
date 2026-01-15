@@ -9,30 +9,32 @@ local function getScriptDir()
 end
 
 local baseDir = getScriptDir() .. "images/"
-local tapsImage       = gfx.loadimg( 0, baseDir.."taps.png")
-local zonesImage      = gfx.loadimg( 1, baseDir.."zones.png")
-local crossImage      = gfx.loadimg( 2, baseDir.."cross.png")
-local laneImage       = gfx.loadimg( 3, baseDir.."lanes.png")
-local greenSpikes     = gfx.loadimg( 4, baseDir.."greenSpikes.png")
-local blueSpikes      = gfx.loadimg( 5, baseDir.."blueSpikes.png")
-local greenCrossfade  = gfx.loadimg( 6, baseDir.."greenCrossfades.png")
-local blueCrossfade   = gfx.loadimg( 7, baseDir.."blueCrossfades.png")
-local scratches       = gfx.loadimg( 8, baseDir.."scratches.png")
-local greenLane       = gfx.loadimg( 9, baseDir.."greenLaneTransitions.png")
-local redLane         = gfx.loadimg(10, baseDir.."redLaneTransitions.png")
-local blueLane        = gfx.loadimg(11, baseDir.."blueLaneTransitions.png")
-local greenTapTrail   = gfx.loadimg(12, baseDir.."greenTapTrail.png")
-local redTapTrail     = gfx.loadimg(13, baseDir.."redTapTrail.png")
-local blueTapTrail    = gfx.loadimg(14, baseDir.."blueTapTrail.png")
-local scratchTrail    = gfx.loadimg(15, baseDir.."scratchTrail.png")
-local effectsHandle   = gfx.loadimg(16, baseDir.."effectsHandle.png")
-local fsCrossGreen    = gfx.loadimg(17, baseDir.."fsCrossfadeGreen.png")
-local fsCrossBlue     = gfx.loadimg(18, baseDir.."fsCrossfadeBlue.png")
-local beatMarker      = gfx.loadimg(19, baseDir.."beatMarker.png")
-local rewindMarker    = gfx.loadimg(20, baseDir.."rewindMarker.png")
-local fsSampleRed     = gfx.loadimg(21, baseDir.."fsSampleRed.png")
-local fsScratchGreen  = gfx.loadimg(22, baseDir.."fsScratchGreen.png")
-local fsScratchBlue   = gfx.loadimg(23, baseDir.."fsScratchBlue.png")
+local tapsImage         = gfx.loadimg( 0, baseDir.."taps.png")
+local zonesImage        = gfx.loadimg( 1, baseDir.."zones.png")
+local crossImage        = gfx.loadimg( 2, baseDir.."cross.png")
+local laneImage         = gfx.loadimg( 3, baseDir.."lanes.png")
+local greenSpikes       = gfx.loadimg( 4, baseDir.."greenSpikes.png")
+local blueSpikes        = gfx.loadimg( 5, baseDir.."blueSpikes.png")
+local greenCrossfade    = gfx.loadimg( 6, baseDir.."greenCrossfades.png")
+local blueCrossfade     = gfx.loadimg( 7, baseDir.."blueCrossfades.png")
+local scratches         = gfx.loadimg( 8, baseDir.."scratches.png")
+local greenLane         = gfx.loadimg( 9, baseDir.."greenLaneTransitions.png")
+local redLane           = gfx.loadimg(10, baseDir.."redLaneTransitions.png")
+local blueLane          = gfx.loadimg(11, baseDir.."blueLaneTransitions.png")
+local greenTapTrail     = gfx.loadimg(12, baseDir.."greenTapTrail.png")
+local redTapTrail       = gfx.loadimg(13, baseDir.."redTapTrail.png")
+local blueTapTrail      = gfx.loadimg(14, baseDir.."blueTapTrail.png")
+local scratchTrail      = gfx.loadimg(15, baseDir.."scratchTrail.png")
+local effectsHandle     = gfx.loadimg(16, baseDir.."effectsHandle.png")
+local fsCrossGreen      = gfx.loadimg(17, baseDir.."fsCrossfadeGreen.png")
+local fsCrossBlue       = gfx.loadimg(18, baseDir.."fsCrossfadeBlue.png")
+local beatMarker        = gfx.loadimg(19, baseDir.."beatMarker.png")
+local rewindMarker      = gfx.loadimg(20, baseDir.."rewindMarker.png")
+local fsSampleRed       = gfx.loadimg(21, baseDir.."fsSampleRed.png")
+local fsScratchGreen    = gfx.loadimg(22, baseDir.."fsScratchGreen.png")
+local fsScratchBlue     = gfx.loadimg(23, baseDir.."fsScratchBlue.png")
+local megamixTransition = gfx.loadimg(24, baseDir.."megamixTransition.png")
+local battleChunkRemix  = gfx.loadimg(25, baseDir.."battleChunkRemix.png")
 
 local u = 512
 
@@ -206,10 +208,14 @@ return {
     FS_CROSS_B_MARKER_START  = ImageData(fsCrossBlue , 0*u, u-32, 1*u, 32),
 
     --markers
-    BEAT_LEFT    = ImageData(beatMarker,   0 , 0, 64, 64),
-    BEAT_RIGHT   = ImageData(beatMarker,   64, 0, 64, 64),
-    REWIND_LEFT  = ImageData(rewindMarker, 0 , 0, 64, 64),
-    REWIND_RIGHT = ImageData(rewindMarker, 64, 0, 64, 64),
+    BEAT_LEFT     = ImageData(beatMarker,        0 , 0, 64, 64),
+    BEAT_RIGHT    = ImageData(beatMarker,        64, 0, 64, 64),
+    REWIND_LEFT   = ImageData(rewindMarker,      0 , 0, 64, 64),
+    REWIND_RIGHT  = ImageData(rewindMarker,      64, 0, 64, 64),
+    MEGAMIX_LEFT  = ImageData(megamixTransition, 0 , 0, 64, 64),
+    MEGAMIX_RIGHT = ImageData(megamixTransition, 64, 0, 64, 64),
+    BATTLE_LEFT   = ImageData(battleChunkRemix,  0 , 0, 64, 64),
+    BATTLE_RIGHT  = ImageData(battleChunkRemix,  64, 0, 64, 64),
 
     --freestyle samples
     FS_SAMPLE_END    = ImageData(fsSampleRed, 0*u, 0*u, u, u/2),

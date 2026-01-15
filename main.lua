@@ -19,6 +19,7 @@ require("renderer/drawFSCrossfade")
 require("renderer/drawBeatIndicators")
 require("renderer/drawFSSamples")
 require("renderer/drawFSScratches")
+require("renderer/drawOther")
 
 --Other globals
 local notesTracks = {}
@@ -49,6 +50,7 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
             sections = {},
             freestyle = {},
             fsCrossfadeMarkers = {},
+            other = {}
         }
         local midiTake = reaper.GetMediaItemTake(reaper.GetTrackMediaItem(track, 0), 0)
         if reaper.TakeIsMIDI(midiTake) then
@@ -228,8 +230,17 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                     end
                 end
 
-                --check for freestyle sample/scratch
-                --unfortunately, the lane is not stored on the midi, but it is related to the velocity 
+                --check for other notes
+                if notePitch == NOTES2MIDI.MEGAMIX_TRANSITION then
+                    if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
+                        table.insert(result.other, MegamixTransitionEvent(noteStartPPQ))
+                    end
+                elseif notePitch == NOTES2MIDI.BATTLE_CHUNKREMIX then
+                    if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
+                        table.insert(result.other, BattleChunkRemixEvent(noteStartPPQ))
+                    end
+                end
+
             end
 
             --get sections
@@ -324,6 +335,7 @@ local function update()
             drawFSCrossfadeMarkers(startPPQ, endPPQ, notesInFrame.fsCrossfadeMarkers)
             drawFSSamples(startPPQ, endPPQ, notesInFrame.freestyle)
             drawFSScratches(startPPQ, endPPQ, notesInFrame.freestyle, mergedCross)
+            drawOther(startPPQ, endPPQ, notesInFrame.other)
 
             drawSections(startPPQ, endPPQ, notesInFrame.sections)
         end

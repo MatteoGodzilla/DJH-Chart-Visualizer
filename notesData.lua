@@ -19,7 +19,9 @@ EventType = {
     FS_CROSS = 9,
     FS_CROSS_MARKER = 10,
     FS_SAMPLE = 11,
-    FS_SCRATCH = 12
+    FS_SCRATCH = 12,
+    MEGAMIX_TRANSITION = 13,
+    BATTLE_CHUNKREMIX = 14
 }
 
 EffectMask = {
@@ -119,4 +121,12 @@ end
 
 function FSScratchEvent(startTime, endTime, pos)
     return EventWithPos(EventType.FS_SCRATCH, startTime, endTime, pos)
+end
+
+function MegamixTransitionEvent(time)
+    return Event(EventType.MEGAMIX_TRANSITION, time, time)
+end
+
+function BattleChunkRemixEvent(time)
+    return Event(EventType.BATTLE_CHUNKREMIX, time, time)
 end

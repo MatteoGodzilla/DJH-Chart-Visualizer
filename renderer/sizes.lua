@@ -10,6 +10,8 @@ EFFECTS_HANDLE_HEIGHT = UNIT / 3
 GROUP_FS_THICKNESS = 4
 GROUP_FS_WIDTH = UNIT / 2
 
+MARKER_SIZE = 16
+
 function updateOrigin(newWidth, newHeight)
     ORIGIN_X = newWidth / 2
     ORIGIN_Y = newHeight - UNIT
