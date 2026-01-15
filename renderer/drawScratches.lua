@@ -7,13 +7,13 @@ local function drawScratchTrailEnd(startPPQ, endPPQ, scratch, lastEvent)
     local endY = ORIGIN_Y + endP * (-ORIGIN_Y)
     local xOffset = 0
 
-    if scratch.position == CrossfadePos.GREEN then
-        if lastEvent.position == CrossfadePos.GREEN then
+    if scratch.lane == Lane.GREEN then
+        if lastEvent.position == CrossfadePos.LEFT then
             xOffset = -2*UNIT
         else
             xOffset = -UNIT
         end
-    elseif scratch.position == CrossfadePos.BLUE then
+    elseif scratch.lane == Lane.BLUE then
         if lastEvent.position == CrossfadePos.BLUE then
             xOffset = 2*UNIT
         else
@@ -28,16 +28,16 @@ local function drawScratchTrailTransition(startPPQ, endPPQ, scratch, lastEvent, 
     local startP = getPercentage(cross.startPPQ,startPPQ, endPPQ)
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
 
-    if scratch.position == CrossfadePos.GREEN then
+    if scratch.lane == Lane.GREEN then
         local image = IMAGES.SCRATCH_TRAIL_TO_RIGHT
-        if (lastEvent.position == CrossfadePos.RED or lastEvent.position == CrossfadePos.BLUE) and cross.position == CrossfadePos.GREEN then
+        if (lastEvent.position == CrossfadePos.CENTER or lastEvent.position == CrossfadePos.RIGHT) and cross.position == CrossfadePos.LEFT then
             -- center to side 
             image = IMAGES.SCRATCH_TRAIL_TO_LEFT
         end
         drawImg(image, ORIGIN_X - 2 * UNIT - UNIT / 2, startY - UNIT / 2, 2 * UNIT, UNIT)
-    elseif scratch.position == CrossfadePos.BLUE then
+    elseif scratch.lane == Lane.BLUE then
         local image = IMAGES.SCRATCH_TRAIL_TO_LEFT
-        if (lastEvent.position == CrossfadePos.GREEN or lastEvent.position == CrossfadePos.RED) and cross.position == CrossfadePos.BLUE then
+        if (lastEvent.position == CrossfadePos.LEFT or lastEvent.position == CrossfadePos.CENTER) and cross.position == CrossfadePos.RIGHT then
             -- center to side 
             image = IMAGES.SCRATCH_TRAIL_TO_RIGHT
         end
@@ -63,14 +63,14 @@ local function drawScratchTrailFill(startPPQ, endPPQ, scratch, cross, needsAdjus
 
     local xOffset = 0
 
-    if scratch.position == CrossfadePos.GREEN then
-        if cross.position == CrossfadePos.GREEN then
+    if scratch.lane == Lane.GREEN then
+        if cross.position == CrossfadePos.LEFT then
             xOffset = -2*UNIT
         else
             xOffset = -UNIT
         end
-    elseif scratch.position == CrossfadePos.BLUE then
-        if cross.position == CrossfadePos.BLUE then
+    elseif scratch.lane == Lane.BLUE then
+        if cross.position == CrossfadePos.RIGHT then
             xOffset = 2*UNIT
         else
             xOffset = UNIT
@@ -105,9 +105,9 @@ local function drawSingleScratch(startPPQ, endPPQ, scratch, cfPos)
     local startP = math.max(0, getPercentage(scratch.startPPQ,startPPQ, endPPQ))
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
 
-    if scratch.position == CrossfadePos.GREEN then
+    if scratch.lane == Lane.GREEN then
         local greenXOffset = -UNIT
-        if cfPos == CrossfadePos.GREEN then
+        if cfPos == CrossfadePos.LEFT then
             greenXOffset = -2*UNIT
         end
         local image = nil
@@ -121,9 +121,9 @@ local function drawSingleScratch(startPPQ, endPPQ, scratch, cfPos)
         if image ~= nil then
             drawImg(image, ORIGIN_X + greenXOffset - UNIT / 2, startY - UNIT / 2, UNIT, UNIT)
         end
-    elseif scratch.position == CrossfadePos.BLUE then
+    elseif scratch.lane == Lane.BLUE then
         local blueXOffset = UNIT
-        if cfPos == CrossfadePos.BLUE then
+        if cfPos == CrossfadePos.RIGHT then
             blueXOffset = 2*UNIT
         end
         local image = nil

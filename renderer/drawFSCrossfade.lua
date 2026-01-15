@@ -10,14 +10,14 @@ local function drawFSCrossMarker(startPPQ, endPPQ, fsCrossfade)
     
     local THICKNESS = UNIT / 16
 
-    if fsCrossfade.position == CrossfadePos.GREEN then
+    if fsCrossfade.lane == Lane.GREEN then
         --start
         drawImg(IMAGES.FS_CROSS_G_MARKER_START, ORIGIN_X - 2.5*UNIT, startY - THICKNESS, UNIT, THICKNESS)
         --middle
         drawImg(IMAGES.FS_CROSS_G_MARKER_MIDDLE, ORIGIN_X - 2.5*UNIT, endY + THICKNESS, UNIT, startY - endY - 2*THICKNESS + 1)
         --end
         drawImg(IMAGES.FS_CROSS_G_MARKER_END, ORIGIN_X - 2.5*UNIT, endY, UNIT, THICKNESS)
-    elseif fsCrossfade.position == CrossfadePos.BLUE then
+    elseif fsCrossfade.lane == Lane.BLUE then
         --start
         drawImg(IMAGES.FS_CROSS_B_MARKER_START, ORIGIN_X + 1.5*UNIT, startY - THICKNESS, UNIT, THICKNESS)
         --middle

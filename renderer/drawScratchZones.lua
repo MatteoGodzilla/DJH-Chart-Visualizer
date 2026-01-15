@@ -5,16 +5,16 @@ local function drawSingleZoneSegment(startPPQ, endPPQ, zoneSegment, cfPos)
     local endY = ORIGIN_Y + endP * (-ORIGIN_Y)
     local alpha = 0.66
 
-    if zoneSegment.position == CrossfadePos.GREEN then
+    if zoneSegment.lane == Lane.GREEN then
         local xOffset = -UNIT
-        if cfPos == CrossfadePos.GREEN then
+        if cfPos == CrossfadePos.LEFT then
             xOffset = -2*UNIT
         end
         gfx.set(0.05, 0.81, 0.10, alpha)
         gfx.rect(ORIGIN_X + xOffset - UNIT/2, endY, UNIT, startY - endY + UNIT / 2)
-    elseif zoneSegment.position == CrossfadePos.BLUE then
+    elseif zoneSegment.lane == Lane.BLUE then
         local xOffset = UNIT
-        if cfPos == CrossfadePos.BLUE then
+        if cfPos == CrossfadePos.RIGHT then
             xOffset = 2*UNIT
         end
         gfx.set(0.14, 0.66, 0.93, alpha)
@@ -22,7 +22,7 @@ local function drawSingleZoneSegment(startPPQ, endPPQ, zoneSegment, cfPos)
     end
 end
 
---number, number, [ScratchZoneEvent], [CrossfadeEvent | CFSpikeEvent]
+--number, number, [ScratchZoneEvent], [CrossfadeEvent]
 function drawScratchZones(startPPQ, endPPQ, scratchZones, mergedCross)
     for _, zone in ipairs(scratchZones) do
         --split zone based on mergedCross in order to have separate segments to draw

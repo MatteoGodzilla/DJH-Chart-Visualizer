@@ -1,7 +1,10 @@
---Consider as an enum type
---TODO: split this between Lane {GREEN, RED, BLUE} and CrossfadePos {LEFT, CENTER, RIGHT}
---it's getting confusing to use CrossfadePos for both
 CrossfadePos = {
+    LEFT = 0,
+    CENTER = 1,
+    RIGHT = 2
+}
+
+Lane = {
     GREEN = 0,
     RED = 1,
     BLUE = 2
@@ -38,19 +41,25 @@ ScratchDir = {
 }
 
 --Inheritance Tree
---Event
---| EventWithPos
---| | CrossfadeEvent
---| | | CFSpikeEvent
---| | TapEvent
---| | ScratchEvent
---| | ScratchZoneEvent
---| | FSCrossMarkerEvent
---| EuphoriaEvent
---| EffectEvent
---| SectionEvent
---| FSCrossfadeEvent
---| FSSampleEvent
+--[[
+Event
+    EventWithPos
+        CrossfadeEvent
+        CFSpikeEvent
+    EventInLane
+        TapEvent
+        ScratchEvent
+        ScratchZoneEvent
+        FSCrossMarkerEvent
+        FSScratchEvent
+    EuphoriaEvent
+    EffectEvent
+    SectionEvent
+    FSCrossfadeEvent
+    FSSampleEvent
+    MegamixTransitionEvent
+    BattleChunkRemixEvent
+]]
 
 local function Event(eventType, startTime, endTime)
     return {
@@ -67,6 +76,13 @@ function EventWithPos(eventType, startTime, endTime, pos)
     return res
 end
 
+--lane is one of the available values in Lanes
+function EventInLane(eventType, startTime, endTime, lane)
+    local res = Event(eventType, startTime, endTime)
+    res.lane = lane
+    return res
+end
+
 function CrossfadeEvent(startTime, endTime, pos)
     return EventWithPos(EventType.CROSS, startTime, endTime, pos)
 end
@@ -77,18 +93,18 @@ function CFSpikeEvent(startTime, endTime, basePos, tipPos)
     return res
 end
 
-function TapEvent(startTime, endTime, pos)
-    return EventWithPos(EventType.TAP, startTime, endTime, pos)
+function TapEvent(startTime, endTime, lane)
+    return EventInLane(EventType.TAP, startTime, endTime, lane)
 end
 
-function ScratchEvent(startTime, endTime, pos, dir)
-    local res = EventWithPos(EventType.SCRATCH, startTime, endTime, pos)
+function ScratchEvent(startTime, endTime, lane, dir)
+    local res = EventInLane(EventType.SCRATCH, startTime, endTime, lane)
     res.direction = dir
     return res
 end
 
-function ScratchZoneEvent(startTime, endTime, pos)
-    return EventWithPos(EventType.SCRATCH_ZONE, startTime, endTime, pos)
+function ScratchZoneEvent(startTime, endTime, lane)
+    return EventInLane(EventType.SCRATCH_ZONE, startTime, endTime, lane)
 end
 
 function EuphoriaEvent(startTime, endTime)
@@ -111,16 +127,16 @@ function FSCrossfadeEvent(startTime, endTime)
     return Event(EventType.FS_CROSS, startTime, endTime)
 end
 
-function FSCrossMarkerEvent(startTime, endTime, pos)
-    return EventWithPos(EventType.FS_CROSS_MARKER, startTime, endTime, pos)
+function FSCrossMarkerEvent(startTime, endTime, lane)
+    return EventInLane(EventType.FS_CROSS_MARKER, startTime, endTime, lane)
 end
 
 function FSSampleEvent(startTime, endTime)
     return Event(EventType.FS_SAMPLE, startTime, endTime)
 end
 
-function FSScratchEvent(startTime, endTime, pos)
-    return EventWithPos(EventType.FS_SCRATCH, startTime, endTime, pos)
+function FSScratchEvent(startTime, endTime, lane)
+    return EventInLane(EventType.FS_SCRATCH, startTime, endTime, lane)
 end
 
 function MegamixTransitionEvent(time)

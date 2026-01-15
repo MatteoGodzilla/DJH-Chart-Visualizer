@@ -10,14 +10,14 @@ local function drawCrossfadeGeneral(before, after, Y)
     --drawImg(IMAGES.LANE_R_ACTIVE, ORIGIN_X - UNIT/2, Y - TRANSITION, UNIT, 2 * TRANSITION)
 
     --TODO: handle effects
-    if before == CrossfadePos.GREEN then
-        if after == CrossfadePos.RED then
+    if before == CrossfadePos.LEFT then
+        if after == CrossfadePos.CENTER then
             --green to red
             drawImg(IMAGES.CROSS_G_LEFT_FRONT_ACTIVE, ORIGIN_X - 2*UNIT - UNIT / 2, Y - TRANSITION, UNIT, 2*TRANSITION)
             drawImg(IMAGES.CROSS_G_RIGHT_BACK_ACTIVE, ORIGIN_X - UNIT - UNIT / 2, Y - TRANSITION, UNIT, 2*TRANSITION)
             --blue lane inactive -> active
             drawImg(IMAGES.LANE_B_INACTIVE_TO_ACTIVE, ORIGIN_X + UNIT - UNIT / 2, Y - TRANSITION, UNIT, 2 * TRANSITION)
-        elseif after == CrossfadePos.BLUE then
+        elseif after == CrossfadePos.RIGHT then
             --green to red crossfade
             drawImg(IMAGES.CROSS_G_LEFT_FRONT_ACTIVE, ORIGIN_X - 2*UNIT - UNIT / 2, Y - TRANSITION, UNIT, 2*TRANSITION)
             drawImg(IMAGES.CROSS_G_RIGHT_BACK_INACTIVE, ORIGIN_X - UNIT - UNIT / 2, Y - TRANSITION, UNIT, 2*TRANSITION)
@@ -25,29 +25,29 @@ local function drawCrossfadeGeneral(before, after, Y)
             drawImg(IMAGES.CROSS_B_LEFT_FRONT_INACTIVE, ORIGIN_X + UNIT - UNIT / 2, Y - TRANSITION, UNIT, 2*TRANSITION)
             drawImg(IMAGES.CROSS_B_RIGHT_BACK_ACTIVE, ORIGIN_X + 2 * UNIT - UNIT / 2, Y - TRANSITION, UNIT, 2*TRANSITION)
         end
-    elseif before == CrossfadePos.RED then
-        if after == CrossfadePos.GREEN then
+    elseif before == CrossfadePos.CENTER then
+        if after == CrossfadePos.LEFT then
             --red to green crossfade
             drawImg(IMAGES.CROSS_G_LEFT_BACK_ACTIVE, ORIGIN_X - 2*UNIT - UNIT / 2, Y - TRANSITION, UNIT, 2*TRANSITION)
             drawImg(IMAGES.CROSS_G_RIGHT_FRONT_ACTIVE, ORIGIN_X - UNIT - UNIT / 2, Y - TRANSITION, UNIT, 2*TRANSITION)
             --blue lane active -> inactive
             drawImg(IMAGES.LANE_B_ACTIVE_TO_INACTIVE, ORIGIN_X + UNIT - UNIT / 2, Y - TRANSITION, UNIT, 2 * TRANSITION)
-        elseif after == CrossfadePos.BLUE then
+        elseif after == CrossfadePos.RIGHT then
             --green lane active -> inactive
             drawImg(IMAGES.LANE_G_ACTIVE_TO_INACTIVE, ORIGIN_X - UNIT - UNIT / 2, Y - TRANSITION, UNIT, 2 * TRANSITION)
             --red to blue crossfade
             drawImg(IMAGES.CROSS_B_LEFT_FRONT_ACTIVE, ORIGIN_X + UNIT - UNIT / 2, Y - TRANSITION, UNIT, 2*TRANSITION)
             drawImg(IMAGES.CROSS_B_RIGHT_BACK_ACTIVE, ORIGIN_X + 2 * UNIT - UNIT / 2, Y - TRANSITION, UNIT, 2*TRANSITION)
         end
-    elseif before == CrossfadePos.BLUE then
-        if after == CrossfadePos.GREEN then
+    elseif before == CrossfadePos.RIGHT then
+        if after == CrossfadePos.LEFT then
             --red to green crossfade
             drawImg(IMAGES.CROSS_G_LEFT_BACK_ACTIVE, ORIGIN_X - 2*UNIT - UNIT / 2, Y - TRANSITION, UNIT, 2*TRANSITION)
             drawImg(IMAGES.CROSS_G_RIGHT_FRONT_INACTIVE, ORIGIN_X - UNIT - UNIT / 2, Y - TRANSITION, UNIT, 2*TRANSITION)
             --blue to red crossfade
             drawImg(IMAGES.CROSS_B_LEFT_BACK_INACTIVE, ORIGIN_X + UNIT - UNIT / 2, Y - TRANSITION, UNIT, 2*TRANSITION)
             drawImg(IMAGES.CROSS_B_RIGHT_FRONT_ACTIVE, ORIGIN_X + 2 * UNIT - UNIT / 2, Y - TRANSITION, UNIT, 2*TRANSITION)
-        elseif after == CrossfadePos.RED then
+        elseif after == CrossfadePos.CENTER then
             --green lane inactive -> active
             drawImg(IMAGES.LANE_G_INACTIVE_TO_ACTIVE, ORIGIN_X - UNIT - UNIT / 2, Y - TRANSITION, UNIT, 2 * TRANSITION)
             --blue to red crossfade
@@ -91,10 +91,10 @@ local function drawLaneGreenBlue(startPPQ, endPPQ, crossfade, freestyle)
 
             --TODO: handle when effects are available
 
-            if crossfade.position == CrossfadePos.GREEN then
+            if crossfade.position == CrossfadePos.LEFT then
                 greenXOff = -2*UNIT
                 blueImg = IMAGES.LANE_B_INACTIVE
-            elseif crossfade.position == CrossfadePos.BLUE then
+            elseif crossfade.position == CrossfadePos.RIGHT then
                 blueXOff = 2*UNIT
                 greenImg = IMAGES.LANE_G_INACTIVE
             end
@@ -172,8 +172,8 @@ local function drawSpike(startPPQ, endPPQ, lastEvent, spike, activeFront, active
     drawLaneGreenBlue(startPPQ, endPPQ, spike, freestyle)
     drawLaneRed(startPPQ, endPPQ, spike, freestyle)
 
-    if spike.position == CrossfadePos.GREEN then
-        if spike.tipPosition ~= CrossfadePos.GREEN then
+    if spike.position == CrossfadePos.LEFT then
+        if spike.tipPosition ~= CrossfadePos.LEFT then
             -- spike from green to red
             local frontImage = IMAGES.SPIKE_G_FRONT_RIGHT_INACTIVE
             if activeFront then
@@ -187,7 +187,7 @@ local function drawSpike(startPPQ, endPPQ, lastEvent, spike, activeFront, active
             drawImg(backImage, ORIGIN_X - 2*UNIT - UNIT / 2, startY - TRANSITION, 2 * UNIT, TRANSITION)
         end
 
-        if spike.tipPosition == CrossfadePos.BLUE then
+        if spike.tipPosition == CrossfadePos.RIGHT then
             -- spike from red to blue
             local frontImage = IMAGES.SPIKE_B_FRONT_RIGHT_ACTIVE
             if activeFront then
@@ -200,8 +200,8 @@ local function drawSpike(startPPQ, endPPQ, lastEvent, spike, activeFront, active
             drawImg(frontImage, ORIGIN_X + UNIT - UNIT / 2, startY, 2 * UNIT, TRANSITION)
             drawImg(backImage, ORIGIN_X + UNIT - UNIT / 2, startY - TRANSITION, 2 * UNIT, TRANSITION)
         end
-    elseif spike.position == CrossfadePos.RED then
-        if spike.tipPosition == CrossfadePos.GREEN then
+    elseif spike.position == CrossfadePos.CENTER then
+        if spike.tipPosition == CrossfadePos.LEFT then
             -- spike from red to green
             local frontImage = IMAGES.SPIKE_G_FRONT_LEFT_INACTIVE
             if activeFront then
@@ -226,8 +226,8 @@ local function drawSpike(startPPQ, endPPQ, lastEvent, spike, activeFront, active
             drawImg(frontImage, ORIGIN_X + UNIT - UNIT / 2, startY, 2 * UNIT, TRANSITION)
             drawImg(backImage, ORIGIN_X + UNIT - UNIT / 2, startY - TRANSITION, 2 * UNIT, TRANSITION)
         end
-    elseif spike.position == CrossfadePos.BLUE then
-        if spike.tipPosition ~= CrossfadePos.BLUE then
+    elseif spike.position == CrossfadePos.RIGHT then
+        if spike.tipPosition ~= CrossfadePos.RIGHT then
             -- spike from blue to red
             local frontImage = IMAGES.SPIKE_B_FRONT_LEFT_INACTIVE
             if activeFront then
@@ -240,7 +240,7 @@ local function drawSpike(startPPQ, endPPQ, lastEvent, spike, activeFront, active
             drawImg(frontImage, ORIGIN_X + UNIT - UNIT / 2, startY, 2 * UNIT, TRANSITION)
             drawImg(backImage, ORIGIN_X + UNIT - UNIT / 2, startY - TRANSITION, 2 * UNIT, TRANSITION)
         end
-        if spike.tipPosition == CrossfadePos.GREEN then
+        if spike.tipPosition == CrossfadePos.LEFT then
             -- spike from red to green
             local frontImage = IMAGES.SPIKE_G_FRONT_LEFT_ACTIVE
             if activeFront then

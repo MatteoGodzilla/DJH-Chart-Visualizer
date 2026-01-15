@@ -19,9 +19,9 @@ function drawZones(startPPQ, mergedCross)
         if first.type == EventType.CROSS then
             --it is currently on a crossfade
             --assume that
-            if first.position == CrossfadePos.GREEN then
+            if first.position == CrossfadePos.LEFT then
                 greenOffset = -UNIT * 2
-            elseif first.position == CrossfadePos.BLUE then
+            elseif first.position == CrossfadePos.RIGHT then
                 blueOffset = UNIT *2
             end
         elseif first.type == EventType.SPIKE then
@@ -31,21 +31,21 @@ function drawZones(startPPQ, mergedCross)
             --local triangle = math.max(0, 2 * (0.5 - math.abs(animPercent * 2 - 1)))
             local triangle = math.max(0, (1 - animPercent)^2 )
 
-            if first.position == CrossfadePos.GREEN then
+            if first.position == CrossfadePos.LEFT then
                 greenOffset = -2*UNIT + UNIT * triangle
-                if first.tipPosition == CrossfadePos.BLUE then
+                if first.tipPosition == CrossfadePos.RIGHT then
                     blueOffset = UNIT + UNIT * triangle
                 end
-            elseif first.position == CrossfadePos.RED then
+            elseif first.position == CrossfadePos.CENTER then
                 --either red-green-red or red-blue-red
-                if first.tipPosition == CrossfadePos.GREEN then
+                if first.tipPosition == CrossfadePos.LEFT then
                     greenOffset = -UNIT - UNIT * triangle
-                elseif first.tipPosition == CrossfadePos.BLUE then
+                elseif first.tipPosition == CrossfadePos.RIGHT then
                     blueOffset = UNIT + UNIT * triangle
                 end
-            elseif first.position == CrossfadePos.BLUE then
+            elseif first.position == CrossfadePos.RIGHT then
                 blueOffset = 2*UNIT - UNIT * triangle
-                if first.tipPosition == CrossfadePos.GREEN then
+                if first.tipPosition == CrossfadePos.LEFT then
                     greenOffset = -UNIT - UNIT * triangle
                 end
             end

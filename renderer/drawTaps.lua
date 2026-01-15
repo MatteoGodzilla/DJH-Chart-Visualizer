@@ -4,17 +4,17 @@ local function drawTapTrailEnd(startPPQ, endPPQ, tap, lastEvent)
     local endP = getPercentage(lastEvent.endPPQ,startPPQ, endPPQ)
     local endY = ORIGIN_Y + endP * (-ORIGIN_Y)
 
-    if tap.position == CrossfadePos.GREEN then
+    if tap.lane == Lane.GREEN then
         local xOffset = -UNIT
-        if lastEvent.position == CrossfadePos.GREEN then
+        if lastEvent.position == CrossfadePos.LEFT then
             xOffset = -2*UNIT
         end
         drawImg(IMAGES.TAP_TRAIL_G_END, ORIGIN_X + xOffset - UNIT / 2, endY - UNIT / 2, UNIT, UNIT)
-    elseif tap.position == CrossfadePos.RED then
+    elseif tap.lane == Lane.RED then
         drawImg(IMAGES.TAP_TRAIL_R_END, ORIGIN_X - UNIT / 2, endY - UNIT / 2, UNIT, UNIT)
-    elseif tap.position == CrossfadePos.BLUE then
+    elseif tap.lane == Lane.BLUE then
         local xOffset = UNIT
-        if lastEvent.position == CrossfadePos.BLUE then
+        if lastEvent.position == CrossfadePos.RIGHT then
             xOffset = 2*UNIT
         end
         drawImg(IMAGES.TAP_TRAIL_B_END, ORIGIN_X + xOffset - UNIT / 2, endY - UNIT / 2, UNIT, UNIT)
@@ -25,16 +25,16 @@ local function drawTapTrailTransition(startPPQ, endPPQ, tap, lastEvent, cross)
     local startP = getPercentage(cross.startPPQ,startPPQ, endPPQ)
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
 
-    if tap.position == CrossfadePos.GREEN then
+    if tap.lane == Lane.GREEN then
         local image = IMAGES.TAP_TRAIL_G_TO_RIGHT
-        if (lastEvent.position == CrossfadePos.RED or lastEvent.position == CrossfadePos.BLUE) and cross.position == CrossfadePos.GREEN then
+        if (lastEvent.position == CrossfadePos.CENTER or lastEvent.position == CrossfadePos.RIGHT) and cross.position == CrossfadePos.LEFT then
             -- center to side 
             image = IMAGES.TAP_TRAIL_G_TO_LEFT
         end
         drawImg(image, ORIGIN_X - 2 * UNIT - UNIT / 2, startY - UNIT / 2, 2 * UNIT, UNIT)
-    elseif tap.position == CrossfadePos.BLUE then
+    elseif tap.lane == Lane.BLUE then
         local image = IMAGES.TAP_TRAIL_B_TO_LEFT
-        if (lastEvent.position == CrossfadePos.GREEN or lastEvent.position == CrossfadePos.RED) and cross.position == CrossfadePos.BLUE then
+        if (lastEvent.position == CrossfadePos.LEFT or lastEvent.position == CrossfadePos.CENTER) and cross.position == CrossfadePos.RIGHT then
             -- center to side 
             image = IMAGES.TAP_TRAIL_B_TO_RIGHT
         end
@@ -50,17 +50,17 @@ local function drawTapTrailFill(startPPQ, endPPQ, tap, cross)
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
     local endY = ORIGIN_Y + endP * (-ORIGIN_Y)
 
-    if tap.position == CrossfadePos.GREEN then
+    if tap.lane == Lane.GREEN then
         local xOffset = -UNIT
-        if cross.position == CrossfadePos.GREEN then
+        if cross.position == CrossfadePos.LEFT then
             xOffset = -2*UNIT
         end
         drawImg(IMAGES.TAP_TRAIL_G_FILL, ORIGIN_X + xOffset - UNIT / 2, endY, UNIT, startY - endY)
-    elseif tap.position == CrossfadePos.RED then
+    elseif tap.lane == Lane.RED then
         drawImg(IMAGES.TAP_TRAIL_R_FILL, ORIGIN_X - UNIT / 2, endY, UNIT, startY - endY)
-    elseif tap.position == CrossfadePos.BLUE then
+    elseif tap.lane == Lane.BLUE then
         local xOffset = UNIT
-        if cross.position == CrossfadePos.BLUE then
+        if cross.position == CrossfadePos.RIGHT then
             xOffset = 2*UNIT
         end
         drawImg(IMAGES.TAP_TRAIL_B_FILL, ORIGIN_X + xOffset - UNIT / 2, endY, UNIT, startY - endY)
@@ -84,7 +84,7 @@ local function drawTapTrail(startPPQ, endPPQ, tap, mergedCross)
     drawTapTrailEnd(startPPQ, endPPQ, tap, lastEvent)
 end
 
---number, number, TapEvent, CrossfadePos
+--number, number, TapEvent, Lane
 local function drawSingleTap(startPPQ, endPPQ, tap, cfPos)
     local startP = math.max(0, getPercentage(tap.startPPQ,startPPQ, endPPQ))
     --TODO: figure out a better solution for held taps
@@ -93,23 +93,23 @@ local function drawSingleTap(startPPQ, endPPQ, tap, cfPos)
     end
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
 
-    if tap.position == CrossfadePos.GREEN then
+    if tap.lane == Lane.GREEN then
         local greenXOff = -UNIT
-        if cfPos == CrossfadePos.GREEN then
+        if cfPos == CrossfadePos.LEFT then
             greenXOff = -2*UNIT
         end
         drawImg(IMAGES.TAP_G_L0, ORIGIN_X + greenXOff - UNIT / 2, startY - UNIT / 2, UNIT, UNIT)
         drawImg(IMAGES.TAP_G_L1, ORIGIN_X + greenXOff - UNIT / 2, startY - UNIT / 2, UNIT, UNIT)
         drawImg(IMAGES.TAP_G_L2, ORIGIN_X + greenXOff - UNIT / 2, startY - UNIT / 2, UNIT, UNIT)
         drawImg(IMAGES.TAP_G_L3, ORIGIN_X + greenXOff - UNIT / 2, startY - UNIT / 2, UNIT, UNIT)
-    elseif tap.position == CrossfadePos.RED then
+    elseif tap.lane == Lane.RED then
         drawImg(IMAGES.TAP_R_L0, ORIGIN_X - UNIT / 2, startY - UNIT / 2, UNIT, UNIT)
         drawImg(IMAGES.TAP_R_L1, ORIGIN_X - UNIT / 2, startY - UNIT / 2, UNIT, UNIT)
         drawImg(IMAGES.TAP_R_L2, ORIGIN_X - UNIT / 2, startY - UNIT / 2, UNIT, UNIT)
         drawImg(IMAGES.TAP_R_L3, ORIGIN_X - UNIT / 2, startY - UNIT / 2, UNIT, UNIT)
-    elseif tap.position == CrossfadePos.BLUE then
+    elseif tap.lane == Lane.BLUE then
         local blueXOff = UNIT
-        if cfPos == CrossfadePos.BLUE then
+        if cfPos == CrossfadePos.RIGHT then
             blueXOff = 2*UNIT
         end
         drawImg(IMAGES.TAP_B_L0, ORIGIN_X + blueXOff - UNIT / 2, startY - UNIT / 2, UNIT, UNIT)

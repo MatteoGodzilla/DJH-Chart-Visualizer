@@ -1,8 +1,8 @@
 require("renderer/sizes")
 
 local function drawSingleEuph(startPPQ, endPPQ, euphoria)
-    local startP = math.max(0, getPercentage(euphoria.startPPQ,startPPQ, endPPQ))
-    local endP = math.min(1, getPercentage(euphoria.endPPQ,startPPQ, endPPQ))
+    local startP = getPercentage(euphoria.startPPQ,startPPQ, endPPQ)
+    local endP = getPercentage(euphoria.endPPQ,startPPQ, endPPQ)
 
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
     local endY = ORIGIN_Y + endP * (-ORIGIN_Y)

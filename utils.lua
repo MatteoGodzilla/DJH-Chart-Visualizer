@@ -67,7 +67,7 @@ function getCrossfadePosAt(ppq, mergedCross)
         end
     end
 
-    return CrossfadePos.RED
+    return CrossfadePos.CENTER
 end
 
 --Event, Event

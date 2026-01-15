@@ -56,7 +56,6 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
         if reaper.TakeIsMIDI(midiTake) then
             local _retval, noteCount, _ccEventCount, textEventCount = reaper.MIDI_CountEvts(midiTake)
 
-            --local lastCrossfade = CrossfadePos.RED
             local crossfadeHistory = { [1] = nil, [2] = nil, [3] = nil}
 
             for i=0, noteCount - 1 do
@@ -66,21 +65,21 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                 if notePitch == NOTES2MIDI.CROSS_G then
                     crossfadeHistory[3] = crossfadeHistory[2]
                     crossfadeHistory[2] = crossfadeHistory[1]
-                    crossfadeHistory[1] = CrossfadeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.GREEN)
+                    crossfadeHistory[1] = CrossfadeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.LEFT)
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
                         table.insert(result.crossfades, crossfadeHistory[1])
                     end
                 elseif notePitch == NOTES2MIDI.CROSS_R then
                     crossfadeHistory[3] = crossfadeHistory[2]
                     crossfadeHistory[2] = crossfadeHistory[1]
-                    crossfadeHistory[1] = CrossfadeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.RED)
+                    crossfadeHistory[1] = CrossfadeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.CENTER)
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
                         table.insert(result.crossfades, crossfadeHistory[1])
                     end
                 elseif notePitch == NOTES2MIDI.CROSS_B then
                     crossfadeHistory[3] = crossfadeHistory[2]
                     crossfadeHistory[2] = crossfadeHistory[1]
-                    crossfadeHistory[1] = CrossfadeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.BLUE)
+                    crossfadeHistory[1] = CrossfadeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.RIGHT)
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
                         table.insert(result.crossfades, crossfadeHistory[1])
                     end
@@ -92,14 +91,14 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                     crossfadeHistory[3] = crossfadeHistory[2]
                     crossfadeHistory[2] = crossfadeHistory[1]
                     --by default outwards spikes have crossfade center as base position
-                    crossfadeHistory[1] = CFSpikeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.RED, CrossfadePos.GREEN)
+                    crossfadeHistory[1] = CFSpikeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.CENTER, CrossfadePos.LEFT)
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
                         table.insert(result.spikes, crossfadeHistory[1])
                     end
                 elseif notePitch == NOTES2MIDI.SPIKE_R then
                     crossfadeHistory[3] = crossfadeHistory[2]
                     crossfadeHistory[2] = crossfadeHistory[1]
-                    crossfadeHistory[1] = CFSpikeEvent(noteStartPPQ, noteEndPPQ, crossfadeHistory[2].position, CrossfadePos.RED)
+                    crossfadeHistory[1] = CFSpikeEvent(noteStartPPQ, noteEndPPQ, crossfadeHistory[2].position, CrossfadePos.CENTER)
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
                         table.insert(result.spikes, crossfadeHistory[1])
                     end
@@ -107,7 +106,7 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                     crossfadeHistory[3] = crossfadeHistory[2]
                     crossfadeHistory[2] = crossfadeHistory[1]
                     --by default outwards spikes have crossfade center as base position
-                    crossfadeHistory[1] = CFSpikeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.RED, CrossfadePos.BLUE)
+                    crossfadeHistory[1] = CFSpikeEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.CENTER, CrossfadePos.RIGHT)
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
                         table.insert(result.spikes, crossfadeHistory[1])
                     end
@@ -125,53 +124,53 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                 --check for taps
                 if notePitch == NOTES2MIDI.TAP_G then
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
-                        table.insert(result.taps, TapEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.GREEN))
+                        table.insert(result.taps, TapEvent(noteStartPPQ, noteEndPPQ, Lane.GREEN))
                     end
                 elseif notePitch == NOTES2MIDI.TAP_R then
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
-                        table.insert(result.taps, TapEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.RED))
+                        table.insert(result.taps, TapEvent(noteStartPPQ, noteEndPPQ, Lane.RED))
                     end
                 elseif notePitch == NOTES2MIDI.TAP_B then
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
-                        table.insert(result.taps, TapEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.BLUE))
+                        table.insert(result.taps, TapEvent(noteStartPPQ, noteEndPPQ, Lane.BLUE))
                     end
                 end
 
                 --check for scratches
                 if notePitch == NOTES2MIDI.SCRATCH_G_UP then
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
-                        table.insert(result.scratches, ScratchEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.GREEN, ScratchDir.UP))
+                        table.insert(result.scratches, ScratchEvent(noteStartPPQ, noteEndPPQ, Lane.GREEN, ScratchDir.UP))
                     end
                 elseif notePitch == NOTES2MIDI.SCRATCH_G_DOWN then
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
-                        table.insert(result.scratches, ScratchEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.GREEN, ScratchDir.DOWN))
+                        table.insert(result.scratches, ScratchEvent(noteStartPPQ, noteEndPPQ, Lane.GREEN, ScratchDir.DOWN))
                     end
                 elseif notePitch == NOTES2MIDI.SCRATCH_G_ANY then
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
-                        table.insert(result.scratches, ScratchEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.GREEN, ScratchDir.ANYDIR))
+                        table.insert(result.scratches, ScratchEvent(noteStartPPQ, noteEndPPQ, Lane.GREEN, ScratchDir.ANYDIR))
                     end
                 elseif notePitch == NOTES2MIDI.SCRATCH_B_UP then
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
-                        table.insert(result.scratches, ScratchEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.BLUE, ScratchDir.UP))
+                        table.insert(result.scratches, ScratchEvent(noteStartPPQ, noteEndPPQ, Lane.BLUE, ScratchDir.UP))
                     end
                 elseif notePitch == NOTES2MIDI.SCRATCH_B_DOWN then
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
-                        table.insert(result.scratches, ScratchEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.BLUE, ScratchDir.DOWN))
+                        table.insert(result.scratches, ScratchEvent(noteStartPPQ, noteEndPPQ, Lane.BLUE, ScratchDir.DOWN))
                     end
                 elseif notePitch == NOTES2MIDI.SCRATCH_B_ANY then
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
-                        table.insert(result.scratches, ScratchEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.BLUE, ScratchDir.ANYDIR))
+                        table.insert(result.scratches, ScratchEvent(noteStartPPQ, noteEndPPQ, Lane.BLUE, ScratchDir.ANYDIR))
                     end
                 end
 
                 --check for scratch zones
                 if notePitch == NOTES2MIDI.SCRATCH_G_ZONE then
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
-                        table.insert(result.scratchZones, ScratchZoneEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.GREEN))
+                        table.insert(result.scratchZones, ScratchZoneEvent(noteStartPPQ, noteEndPPQ, Lane.GREEN))
                     end
                 elseif notePitch == NOTES2MIDI.SCRATCH_B_ZONE then
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
-                        table.insert(result.scratchZones, ScratchZoneEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.BLUE))
+                        table.insert(result.scratchZones, ScratchZoneEvent(noteStartPPQ, noteEndPPQ, Lane.BLUE))
                     end
                 end
 
@@ -209,10 +208,10 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                 elseif notePitch == NOTES2MIDI.FS_SAMPLES_SCRATCHES then
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
                         local lane = freestyleSampleToLane[noteVelocity]
-                        if lane == CrossfadePos.GREEN then
-                            table.insert(result.freestyle, FSScratchEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.GREEN))
-                        elseif lane == CrossfadePos.BLUE then
-                            table.insert(result.freestyle, FSScratchEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.BLUE))
+                        if lane == Lane.GREEN then
+                            table.insert(result.freestyle, FSScratchEvent(noteStartPPQ, noteEndPPQ, Lane.GREEN))
+                        elseif lane == Lane.BLUE then
+                            table.insert(result.freestyle, FSScratchEvent(noteStartPPQ, noteEndPPQ, Lane.BLUE))
                         else 
                             table.insert(result.freestyle, FSSampleEvent(noteStartPPQ, noteEndPPQ))
                         end
@@ -222,11 +221,11 @@ local function getNotesInFrame(track, startPPQ, endPPQ)
                 --check for freestyle crossfade markers
                 if notePitch == NOTES2MIDI.FS_CROSS_G_MARKER then
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
-                        table.insert(result.fsCrossfadeMarkers, FSCrossMarkerEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.GREEN))
+                        table.insert(result.fsCrossfadeMarkers, FSCrossMarkerEvent(noteStartPPQ, noteEndPPQ, Lane.GREEN))
                     end
                 elseif notePitch == NOTES2MIDI.FS_CROSS_B_MARKER then
                     if isVisible(noteStartPPQ, noteEndPPQ, startPPQ, endPPQ) then
-                        table.insert(result.fsCrossfadeMarkers, FSCrossMarkerEvent(noteStartPPQ, noteEndPPQ, CrossfadePos.BLUE))
+                        table.insert(result.fsCrossfadeMarkers, FSCrossMarkerEvent(noteStartPPQ, noteEndPPQ, Lane.BLUE))
                     end
                 end
 
@@ -364,7 +363,7 @@ local function parseSampleMap(file)
             --we have a match
             for vel in string.gmatch(data, "%d*") do
                 if #vel > 0 then
-                    result[tonumber(vel)] = CrossfadePos.GREEN
+                    result[tonumber(vel)] = Lane.GREEN
                 end
             end
         end
@@ -373,7 +372,7 @@ local function parseSampleMap(file)
             --we have a match
             for vel in string.gmatch(data, "%d*") do
                 if #vel > 0 then
-                    result[tonumber(vel)] = CrossfadePos.BLUE
+                    result[tonumber(vel)] = Lane.BLUE
                 end
             end
         end
