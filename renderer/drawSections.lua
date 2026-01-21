@@ -1,4 +1,5 @@
 local IMAGES = require("images")
+local COLORS = require("colors")
 
 --number, number, SectionEvent
 local function drawSection(startPPQ, endPPQ, section)
@@ -11,7 +12,7 @@ local function drawSection(startPPQ, endPPQ, section)
     drawImg(IMAGES.REWIND_LEFT, ORIGIN_X - 2.5*UNIT - PADDING * 2 - MARKER_SIZE * 2, y - MARKER_SIZE, MARKER_SIZE * 2, MARKER_SIZE * 2)
     drawImg(IMAGES.REWIND_RIGHT, ORIGIN_X + 2.5*UNIT + PADDING * 2, y - MARKER_SIZE, MARKER_SIZE * 2, MARKER_SIZE * 2)
 
-    gfx.set(0.14, 0.66, 0.92, 1)
+    gfx.set(COLORS.BLUE.r, COLORS.BLUE.g, COLORS.BLUE.b, 1)
     local textPadding = 4
     local left = ORIGIN_X + 2.5*UNIT + PADDING * 2 + MARKER_SIZE * 2
     local right = left + textWidth + textPadding * 2
@@ -21,7 +22,7 @@ local function drawSection(startPPQ, endPPQ, section)
 
     gfx.x = ORIGIN_X + 2.5*UNIT + PADDING * 2 + MARKER_SIZE * 2 + textPadding
     gfx.y = y - textHeight / 2 
-    gfx.set(1,1,1,1)
+    gfx.set(COLORS.WHITE.r, COLORS.WHITE.g, COLORS.WHITE.b, 1)
     gfx.drawstr(section.text)
 
     gfx.x = oldX

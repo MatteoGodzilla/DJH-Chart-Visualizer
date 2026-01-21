@@ -384,7 +384,7 @@ end
 local function main()
     local WIDTH = 800
     local HEIGHT = 600
-    gfx.init("DJH-Chart-Visualizer", WIDTH, HEIGHT)
+    gfx.init("DJH-Chart-Visualizer v20260121", WIDTH, HEIGHT)
     gfx.setfont(1, "Arial", 20)
 
     local sampleMap = reaper.GetProjectPath().."/sampleMap.txt"

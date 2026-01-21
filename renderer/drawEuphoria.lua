@@ -1,4 +1,5 @@
 require("renderer/sizes")
+local COLORS = require("colors")
 
 local function drawSingleEuph(startPPQ, endPPQ, euphoria)
     local startP = getPercentage(euphoria.startPPQ,startPPQ, endPPQ)
@@ -7,7 +8,7 @@ local function drawSingleEuph(startPPQ, endPPQ, euphoria)
     local startY = ORIGIN_Y + startP * (-ORIGIN_Y)
     local endY = ORIGIN_Y + endP * (-ORIGIN_Y)
 
-    gfx.set(1,1,1,0.5)
+    gfx.set(COLORS.WHITE.r, COLORS.WHITE.g, COLORS.WHITE.b, 0.5) --TODO: change this to a well-defined color
     gfx.rect(ORIGIN_X - 2.5*UNIT - PADDING, endY, 5*UNIT + 2*PADDING, startY - endY)
 end
 

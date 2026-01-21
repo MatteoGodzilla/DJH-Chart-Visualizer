@@ -1,4 +1,5 @@
 local IMAGES = require("images")
+local COLORS = require("colors")
 
 local function drawFSScratchStart(startPPQ, endPPQ, fakeEvent, crossfadePosition)
     local startP = getPercentage(fakeEvent.startPPQ, startPPQ, endPPQ)
@@ -187,14 +188,14 @@ local function drawFSScratch(startPPQ, endPPQ, group, lane, crossfades)
         local markerY = ORIGIN_Y + markerP * (-ORIGIN_Y)
         local cfPos = getCrossfadePosAt(other.startPPQ, crossfades)
         if lane == Lane.GREEN then
-            gfx.set(0.051, 0.812, 0.102, 1) 
+            gfx.set(COLORS.GREEN.r, COLORS.GREEN.g, COLORS.GREEN.b, 1)
             local xOffset = -UNIT
             if cfPos == CrossfadePos.LEFT then
                 xOffset = -2*UNIT
             end
             gfx.rect(ORIGIN_X + xOffset - GROUP_FS_WIDTH/2, markerY - GROUP_FS_THICKNESS / 2, GROUP_FS_WIDTH, GROUP_FS_THICKNESS)
         elseif lane == Lane.BLUE then
-            gfx.set(0.141, 0.659, 0.929, 1) 
+            gfx.set(COLORS.BLUE.r, COLORS.BLUE.g, COLORS.BLUE.b, 1)
             local xOffset = UNIT
             if cfPos == CrossfadePos.RIGHT then
                 xOffset = 2*UNIT

@@ -30,7 +30,7 @@ end
 function glog(str)
     gfx.x = 0
     gfx.y = logY
-    gfx.set(1,1,1)
+    gfx.set(1,1,1) --TODO: change this to a well-defined color
 
     gfx.printf(str.."\n")
 

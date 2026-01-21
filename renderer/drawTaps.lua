@@ -87,7 +87,6 @@ end
 --number, number, TapEvent, Lane
 local function drawSingleTap(startPPQ, endPPQ, tap, cfPos)
     local startP = math.max(0, getPercentage(tap.startPPQ,startPPQ, endPPQ))
-    --TODO: figure out a better solution for held taps
     if startP < 0 then
         return
     end

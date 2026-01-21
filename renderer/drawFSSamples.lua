@@ -1,4 +1,5 @@
 local IMAGES = require("images")
+local COLORS = require("colors")
 
 --number, number, Group 
 local function drawFSSample(startPPQ, endPPQ, group)
@@ -16,7 +17,7 @@ local function drawFSSample(startPPQ, endPPQ, group)
     end
 
     --draw additional markers for all the notes in group
-    gfx.set(0.851, 0.078, 0.078, 1) 
+    gfx.set(COLORS.RED.r, COLORS.RED.g, COLORS.RED.b, 1)
     for _, other in ipairs(group.events) do
         local markerP = getPercentage(other.startPPQ, startPPQ, endPPQ)
         local markerY = ORIGIN_Y + markerP * (-ORIGIN_Y)

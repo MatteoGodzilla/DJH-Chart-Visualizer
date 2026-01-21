@@ -38,8 +38,6 @@ local battleChunkRemix  = gfx.loadimg(25, baseDir.."battleChunkRemix.png")
 
 local u = 512
 
---TODO: hold tap trail
---TODO: freestyle
 return {
     TAP_G_L0 = ImageData(tapsImage,0*u,0*u,1*u,1*u),
     TAP_G_L1 = ImageData(tapsImage,1*u,0*u,1*u,1*u),
